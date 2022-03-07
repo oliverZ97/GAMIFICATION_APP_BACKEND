@@ -1,11 +1,6 @@
 package app.restservice.apprestservice.Services;
 
-import java.util.ArrayList;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,82 +8,81 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import app.restservice.apprestservice.CopyPropertiesofEntity;
+import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.User;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.UserRepository;
 
-@Service
-public class UserService implements UserDetailsService{
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-    private CopyPropertiesofEntity copyPropertiesofEntity;
+@Service
+public class UserService  implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
+    private CopyPropertiesOfEntity copyPropertiesOfEntity;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
-        User user = userRepository.findByEmail(email);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new ResourceNotFoundException("User not found with email: " + email);
-        } else {
-            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPasswordHash(),
-                    new ArrayList<>());
+            throw new ResourceNotFoundException("User not found with username: " + username);
         }
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+                new ArrayList<>());
     }
-
-    public User getUserByEmail(String email) throws UsernameNotFoundException {
-        Optional<User> useroptional = userRepository.getUserByEmail(email);
+    public User getUserByUsername(String username) {
+        Optional<User> useroptional = userRepository.getUserByUsername(username);
         if (useroptional.isPresent()) {
             return useroptional.get();
         } else {
-            throw new ResourceNotFoundException("User with email not found");
+            throw new ResourceNotFoundException("User with username not found");
         }
     }
 
-    public boolean checkIfEmailIsAlreadyTaken(String email) {
-        return userRepository.getUserByEmail(email).isPresent();
-      }
+    public boolean checkifUsernameIsAlreadyTaken(String username) {
+        return userRepository.getUserByUsername(username).isPresent();
+    }
 
     public User getUser(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()) {
-            return userOptional.get();
+        if (userRepository.findById(id).isPresent()) {
+            return userRepository.findById(id).get();
         } else {
-            throw new app.restservice.apprestservice.Exceptions.ResourceNotFoundException(
-                    "User not found at id " + id.toString());
+            throw new ResourceNotFoundException("no question found at id" + id);
         }
+    }
+
+    public List<User> getAllQuestions() {
+        return userRepository.findAll();
     }
 
     public User setUser(User user) {
-        User newUser = new User();
-        newUser.setEmail(user.getEmail());
-        newUser.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+
+            User newUser = new User();
+            newUser.setUsername(user.getUsername());
+            newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            return userRepository.save(newUser);
+    }
+
+    public User updateUser(User userRequest, long id) {
+        User user = getUser(id);
+        copyPropertiesOfEntity.copyNonNullProperties(userRequest, user);
         return userRepository.save(user);
     }
 
-    public Page<User> getAllUser(Pageable pageable) {
 
-        pageable = PageRequest.of(0, Integer.MAX_VALUE);
-        return userRepository.findAll(pageable);
+    public ResponseEntity<?> deleteUser(long id) {
+        return userRepository.findById(id)
+                .map(student -> {
+                    userRepository.delete(student);
+                    return ResponseEntity.ok().build();
+                }).orElseThrow(() -> new ResourceNotFoundException("Question not found with id " + id));
     }
 
-    public User updateUser(Long id, User userRequest) {
-    
-    User existingUser = getUser(id);
-    copyPropertiesofEntity.copyNonNullProperties(userRequest, existingUser);
-    return userRepository.save(existingUser);
-    }
 
-    public ResponseEntity<?> deleteUser(Long id) {
-    return userRepository.findById(id).map(user -> {
-    userRepository.delete(user);
-    return ResponseEntity.ok().build();
-    }).orElseThrow(() -> new ResourceNotFoundException("User not found with id "
-    + id));
-    }
 }

@@ -1,8 +1,5 @@
 package app.restservice.apprestservice;
 
-import java.security.SecureRandom;
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,11 +14,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import app.restservice.apprestservice.JwTAuthentication.JwtAuthenticationEntryPoint;
 import app.restservice.apprestservice.JwTAuthentication.JwtRequestFilter;
 import app.restservice.apprestservice.Services.UserService;
+
+import java.security.SecureRandom;
+import java.util.Arrays;
+
+import javax.annotation.PostConstruct;
 
 @Configuration
 @EnableWebSecurity
@@ -43,11 +46,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         if (AUTH_MODE.equals("PROD")) {
-            httpSecurity.cors().and().csrf().disable()
-                    // .addFilterBefore(corsFilter(), SessionManagementFilter.class) //adds your
-                    // custom CorsFilter
+            httpSecurity.csrf().disable()
                     // dont authenticate this particular request
-                    .authorizeRequests().antMatchers("/authenticate", "/register").permitAll().
+                    .authorizeRequests().antMatchers("/authenticate", "/register", "/verify/{verificationCode}")
+                    .permitAll().
                     // all other requests need to be authenticated
                     anyRequest().authenticated().and().
                     // make sure we use stateless session; session won't be used to
@@ -58,23 +60,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             // Add a filter to validate the tokens with every request
             httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         } else if (AUTH_MODE.equals("DEV")) {
-            // Disable Authentication for testing purposes by commenting this in and the
-            // other stuff out
             httpSecurity.cors().and().csrf().disable();
         }
     }
-
-    // @Bean
-    // CorsConfigurationSource corsConfigurationSource() {
-    //     CorsConfiguration configuration = new CorsConfiguration();
-    //     configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8080"));
-    //     configuration.setAllowedMethods(Arrays.asList("*"));
-    //     configuration.setAllowedHeaders(Arrays.asList("*"));
-    //     configuration.setAllowCredentials(true);
-    //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    //     source.registerCorsConfiguration("/**", configuration);
-    //     return source;
-    // }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -82,6 +70,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // user for matching credentials
         // Use BCryptPasswordEncoder
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean

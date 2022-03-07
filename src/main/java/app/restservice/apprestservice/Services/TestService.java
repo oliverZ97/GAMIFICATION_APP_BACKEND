@@ -1,62 +1,54 @@
 package app.restservice.apprestservice.Services;
 
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import app.restservice.apprestservice.CopyPropertiesofEntity;
-import app.restservice.apprestservice.Entities.TestEntity;
+import app.restservice.apprestservice.CopyPropertiesOfEntity;
+import app.restservice.apprestservice.Entities.Test;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.TestRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 @Service
-@NoArgsConstructor
-@AllArgsConstructor
 public class TestService {
-
-    private CopyPropertiesofEntity copyPropertiesofEntity;
-
+   
     @Autowired
     private TestRepository testRepository;
 
-    public TestEntity getTest(Long id) {
-        Optional<TestEntity> testOptional = testRepository.findById(id);
-        if (testOptional.isPresent()) {
-            return testOptional.get();
+    private CopyPropertiesOfEntity copyPropertiesOfEntity;
+
+    public Test getTest(Long id) {
+        if (testRepository.findById(id).isPresent()) {
+            return testRepository.findById(id).get();
         } else {
-            throw new app.restservice.apprestservice.Exceptions.ResourceNotFoundException(
-                    "Unit not found at id " + id.toString());
+            throw new ResourceNotFoundException("no test found at id" + id);
         }
     }
 
-    public TestEntity setTest(TestEntity test) {
+    public List<Test> getAllTests() {
+        return testRepository.findAll();
+    }
+
+    public Test setTest(Test test) {
         return testRepository.save(test);
     }
 
-    public Page<TestEntity> getAllTests(Pageable pageable) {
-
-        pageable = PageRequest.of(0, Integer.MAX_VALUE);
-        return testRepository.findAll(pageable);
+    public Test updateTest(Test testRequest, long id) {
+        Test test = getTest(id);
+        copyPropertiesOfEntity.copyNonNullProperties(testRequest, test);
+        return testRepository.save(test);
     }
 
-    public TestEntity updateTest(Long id, TestEntity testRequest) {
-    ;
-    TestEntity existingTest = getTest(id);
-    copyPropertiesofEntity.copyNonNullProperties(testRequest, existingTest);
-    return testRepository.save(existingTest);
+
+    public ResponseEntity<?> deleteTest(long id) {
+        return testRepository.findById(id)
+                .map(taste -> {
+                    testRepository.delete(taste);
+                    return ResponseEntity.ok().build();
+                }).orElseThrow(() -> new ResourceNotFoundException("test not found with id " + id));
     }
 
-    public ResponseEntity<?> deleteTest(Long id) {
-    return testRepository.findById(id).map(test -> {
-    testRepository.delete(test);
-    return ResponseEntity.ok().build();
-    }).orElseThrow(() -> new ResourceNotFoundException("Unit not found with id "
-    + id));
-    }
 }

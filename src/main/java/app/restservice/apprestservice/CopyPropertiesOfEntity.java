@@ -7,7 +7,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CopyPropertiesofEntity {
+public class CopyPropertiesOfEntity {
 
     public static void copyNonNullProperties(Object src, Object target) {
         BeanUtils.copyProperties(src, target, getNullPropertyNames(src));
@@ -16,8 +16,8 @@ public class CopyPropertiesofEntity {
     public static String[] getNullPropertyNames(Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
-
         Set<String> emptyNames = new HashSet<String>();
+
         for (java.beans.PropertyDescriptor pd : pds) {
             Object srcValue = src.getPropertyValue(pd.getName());
             if (srcValue == null) emptyNames.add(pd.getName());

@@ -81,7 +81,7 @@ public class UserService  implements UserDetailsService {
                 .map(student -> {
                     userRepository.delete(student);
                     return ResponseEntity.ok().build();
-                }).orElseThrow(() -> new ResourceNotFoundException("Question not found with id " + id));
+                }).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
     }
 
 

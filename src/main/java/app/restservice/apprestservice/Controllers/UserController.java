@@ -82,8 +82,6 @@ public class UserController {
         return userService.getAllQuestions();
     }
 
-
-
     @PutMapping("/user/update/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User userRequest) {
         return userService.updateUser(userRequest, id);

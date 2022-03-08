@@ -24,8 +24,6 @@ import app.restservice.apprestservice.Services.UserService;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
-import javax.annotation.PostConstruct;
-
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {

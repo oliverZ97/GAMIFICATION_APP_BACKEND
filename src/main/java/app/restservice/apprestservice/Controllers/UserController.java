@@ -55,7 +55,7 @@ public class UserController {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
         } else {
-            if (userService.checkifUsernameIsAlreadyTaken(user.getUsername())) {
+            if (userService.checkifUsernameIsAlreadyTaken(user.getEmail())) {
                 return ResponseEntity.badRequest().body("username is already taken");
             } else {
                userService.setUser(user);

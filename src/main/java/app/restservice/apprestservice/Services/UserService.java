@@ -33,7 +33,7 @@ public class UserService  implements UserDetailsService {
         if (user == null) {
             throw new ResourceNotFoundException("User not found with username: " + username);
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 new ArrayList<>());
     }
     public User getUserByUsername(String username) {
@@ -64,7 +64,7 @@ public class UserService  implements UserDetailsService {
     public User setUser(User user) {
 
             User newUser = new User();
-            newUser.setUsername(user.getUsername());
+            newUser.setEmail(user.getEmail());
             newUser.setPassword(passwordEncoder.encode(user.getPassword()));
             return userRepository.save(newUser);
     }

@@ -3,8 +3,7 @@ package app.restservice.apprestservice.Entities;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Email;
 
 
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
@@ -22,7 +21,24 @@ public class User {
 
     @Getter
     @Setter
-    private String username;
+    @Email
+    private String email;
+
+    @Getter
+    @Setter
+    private String prename;
+
+    @Getter
+    @Setter
+    private String surname;
+
+    @Getter
+    @Setter
+    private String usercode;
+
+    @Getter
+    @Setter
+    private Long experience_ID;
 
     @Getter
     @Setter

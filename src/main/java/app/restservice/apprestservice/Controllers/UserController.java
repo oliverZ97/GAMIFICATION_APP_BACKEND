@@ -36,12 +36,12 @@ public class UserController {
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public UserAndToken createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
-        if (!userService.getUserByUsername(authenticationRequest.getUsername()).equals(null)) {
+        if (!userService.getUserByEmail(authenticationRequest.getUsername()).equals(null)) {
 
                 authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
                 final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
                 final String token = jwtTokenUtil.generateToken(userDetails);
-                User user = userService.getUserByUsername(authenticationRequest.getUsername());
+                User user = userService.getUserByEmail(authenticationRequest.getUsername());
                 UserAndToken thisToken = new UserAndToken(user, token);
                 return thisToken;
         } else {

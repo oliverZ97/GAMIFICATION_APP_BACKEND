@@ -29,14 +29,14 @@ public class UserService  implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByEmail(username);
         if (user == null) {
             throw new ResourceNotFoundException("User not found with username: " + username);
         }
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 new ArrayList<>());
     }
-    public User getUserByUsername(String username) {
+    public User getUserByEmail(String username) {
         Optional<User> useroptional = userRepository.getUserByUsername(username);
         if (useroptional.isPresent()) {
             return useroptional.get();

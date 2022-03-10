@@ -18,17 +18,17 @@ public class ExperienceController {
     @Autowired
     private ExperienceService experienceService;
 
-    @GetMapping("/experience/get/{id}")
+    @GetMapping("/experiences/get/{id}")
     public Experience getTest(@PathVariable Long id) {
         return experienceService.getExperience(id);
     }
 
-    @GetMapping("/experience/getAll")
+    @GetMapping("/experiences/getAll")
     public List<Experience> getAllExperiences() {
         return experienceService.getAllExperiences();
     }
 
-    @PostMapping("/experience/set")
+    @PostMapping("/experiences/set")
     public ResponseEntity<String> setExperience(@Valid @RequestBody Experience experience, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
@@ -38,12 +38,12 @@ public class ExperienceController {
         }
     }
 
-    @PutMapping("/experience/update/{id}")
+    @PutMapping("/experiences/update/{id}")
     public Experience updateExperience(@PathVariable Long id, @RequestBody Experience experienceRequest) {
         return experienceService.updateExperience(experienceRequest, id);
     }
 
-    @DeleteMapping("/experience/delete/{id}")
+    @DeleteMapping("/experiences/delete/{id}")
     public ResponseEntity<?> deleteExperience(@PathVariable Long id) {
         return experienceService.deleteExperience(id);
     }

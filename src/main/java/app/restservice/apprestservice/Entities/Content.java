@@ -30,7 +30,7 @@ public class Content {
     @Getter
     @Setter
     @NotEmpty
-    private String[] topic_IDs;
+    private long[] topic_IDs;
 
     @Getter
     @Setter

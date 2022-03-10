@@ -18,17 +18,17 @@ public class QuestController {
     @Autowired
     private QuestService questService;
 
-    @GetMapping("/quest/get/{id}")
+    @GetMapping("/quests/get/{id}")
     public Quest getQuest(@PathVariable Long id) {
         return questService.getQuest(id);
     }
 
-    @GetMapping("/quest/getAll")
+    @GetMapping("/quests/getAll")
     public List<Quest> getAllQuests() {
         return questService.getAllQuests();
     }
 
-    @PostMapping("/quest/set")
+    @PostMapping("/quests/set")
     public ResponseEntity<String> setTest(@Valid @RequestBody Quest quest, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
@@ -38,12 +38,12 @@ public class QuestController {
         }
     }
 
-    @PutMapping("/quest/update/{id}")
+    @PutMapping("/quests/update/{id}")
     public Quest updateQuest(@PathVariable Long id, @RequestBody Quest questRequest) {
         return questService.updateQuest(questRequest, id);
     }
 
-    @DeleteMapping("/quest/delete/{id}")
+    @DeleteMapping("/quests/delete/{id}")
     public ResponseEntity<?> deleteQuest(@PathVariable Long id) {
         return questService.deleteQuest(id);
     }

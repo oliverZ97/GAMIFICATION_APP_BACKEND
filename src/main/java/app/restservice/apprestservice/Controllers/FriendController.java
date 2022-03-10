@@ -18,17 +18,17 @@ public class FriendController {
     @Autowired
     private FriendService friendService;
 
-    @GetMapping("/friend/get/{id}")
+    @GetMapping("/friends/get/{id}")
     public Friend getFriend(@PathVariable Long id) {
         return friendService.getFriend(id);
     }
 
-    @GetMapping("/friend/getAll")
+    @GetMapping("/friends/getAll")
     public List<Friend> getAllFriends() {
         return friendService.getAllFriends();
     }
 
-    @PostMapping("/friend/set")
+    @PostMapping("/friends/set")
     public ResponseEntity<String> setTest(@Valid @RequestBody Friend friend, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
@@ -38,12 +38,12 @@ public class FriendController {
         }
     }
 
-    @PutMapping("/friend/update/{id}")
+    @PutMapping("/friends/update/{id}")
     public Friend updateFriend(@PathVariable Long id, @RequestBody Friend friendRequest) {
         return friendService.updateFriend(friendRequest, id);
     }
 
-    @DeleteMapping("/friend/delete/{id}")
+    @DeleteMapping("/friends/delete/{id}")
     public ResponseEntity<?> deleteFriend(@PathVariable Long id) {
         return friendService.deleteFriend(id);
     }

@@ -18,17 +18,17 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping("/category/get/{id}")
+    @GetMapping("/categories/get/{id}")
     public Category getCategory(@PathVariable Long id) {
         return categoryService.getCategory(id);
     }
 
-    @GetMapping("/category/getAll")
+    @GetMapping("/categories/getAll")
     public List<Category> getAllCategories() {
         return categoryService.getAllCategories();
     }
 
-    @PostMapping("/category/set")
+    @PostMapping("/categories/set")
     public ResponseEntity<String> setCategory(@Valid @RequestBody Category category, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
@@ -38,12 +38,12 @@ public class CategoryController {
         }
     }
 
-    @PutMapping("/category/update/{id}")
+    @PutMapping("/categories/update/{id}")
     public Category updateCategory(@PathVariable Long id, @RequestBody Category categoryRequest) {
         return categoryService.updateCategory(categoryRequest, id);
     }
 
-    @DeleteMapping("/category/delete/{id}")
+    @DeleteMapping("/categories/delete/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         return categoryService.deleteCategory(id);
     }

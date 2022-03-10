@@ -18,17 +18,17 @@ public class AchievementController {
     @Autowired
     private AchievementService achievementService;
 
-    @GetMapping("/achievement/get/{id}")
+    @GetMapping("/achievements/get/{id}")
     public Achievement getAchievement(@PathVariable Long id) {
         return achievementService.getAchievement(id);
     }
 
-    @GetMapping("/achievement/getAll")
+    @GetMapping("/achievements/getAll")
     public List<Achievement> getAllAchievements() {
         return achievementService.getAllAchievements();
     }
 
-    @PostMapping("/achievement/set")
+    @PostMapping("/achievements/set")
     public ResponseEntity<String> setAchievement(@Valid @RequestBody Achievement achievement, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
@@ -38,12 +38,12 @@ public class AchievementController {
         }
     }
 
-    @PutMapping("/achievement/update/{id}")
+    @PutMapping("/achievements/update/{id}")
     public Achievement updateTest(@PathVariable Long id, @RequestBody Achievement achievementRequest) {
         return achievementService.updateAchievement(achievementRequest, id);
     }
 
-    @DeleteMapping("/achievement/delete/{id}")
+    @DeleteMapping("/achievements/delete/{id}")
     public ResponseEntity<?> deleteAchievement(@PathVariable Long id) {
         return achievementService.deleteAchievement(id);
     }

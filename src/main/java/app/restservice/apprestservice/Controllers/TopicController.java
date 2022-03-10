@@ -18,17 +18,17 @@ public class TopicController {
     @Autowired
     private TopicService topicService;
 
-    @GetMapping("/topic/get/{id}")
+    @GetMapping("/topics/get/{id}")
     public Topic getTest(@PathVariable Long id) {
         return topicService.getTopic(id);
     }
 
-    @GetMapping("/topic/getAll")
+    @GetMapping("/topics/getAll")
     public List<Topic> getAllTopics() {
         return topicService.getAllTopics();
     }
 
-    @PostMapping("/topic/set")
+    @PostMapping("/topics/set")
     public ResponseEntity<String> setTest(@Valid @RequestBody Topic topic, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
@@ -38,12 +38,12 @@ public class TopicController {
         }
     }
 
-    @PutMapping("/topic/update/{id}")
+    @PutMapping("/topics/update/{id}")
     public Topic updateTopic(@PathVariable Long id, @RequestBody Topic topicRequest) {
         return topicService.updateTopic(topicRequest, id);
     }
 
-    @DeleteMapping("/topic/delete/{id}")
+    @DeleteMapping("/topics/delete/{id}")
     public ResponseEntity<?> deleteTopic(@PathVariable Long id) {
         return topicService.deleteTopic(id);
     }

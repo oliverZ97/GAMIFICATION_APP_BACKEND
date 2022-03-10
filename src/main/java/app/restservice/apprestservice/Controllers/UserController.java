@@ -72,22 +72,22 @@ public class UserController {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
     }
-    @GetMapping("/user/get/{id}")
+    @GetMapping("/users/get/{id}")
     public User getUser(@PathVariable Long id) {
         return userService.getUser(id);
     }
 
-    @GetMapping("/user/getAll")
+    @GetMapping("/users/getAll")
     public List<User> getAllQuestions() {
         return userService.getAllQuestions();
     }
 
-    @PutMapping("/user/update/{id}")
+    @PutMapping("/users/update/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User userRequest) {
         return userService.updateUser(userRequest, id);
     }
 
-    @DeleteMapping("/user/delete/{id}")
+    @DeleteMapping("/users/delete/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         return userService.deleteUser(id);
     }

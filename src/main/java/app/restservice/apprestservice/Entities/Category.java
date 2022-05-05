@@ -1,4 +1,5 @@
 package app.restservice.apprestservice.Entities;
+
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,5 +22,10 @@ public class Category {
     @Setter
     @NotEmpty
     private String name;
+
+    @Getter
+    @Setter
+    @NotEmpty
+    private String minLevel;
 
 }

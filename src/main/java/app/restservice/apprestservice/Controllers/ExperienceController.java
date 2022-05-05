@@ -1,6 +1,8 @@
 package app.restservice.apprestservice.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,8 +21,13 @@ public class ExperienceController {
     private ExperienceService experienceService;
 
     @GetMapping("/experiences/get/{id}")
-    public Experience getTest(@PathVariable Long id) {
+    public Experience getExperience(@PathVariable Long id) {
         return experienceService.getExperience(id);
+    }
+
+    @GetMapping("/experiences/getbyuserid/{id}")
+    public Experience getExperienceByUserID(@PathVariable Long id) {
+        return experienceService.getExperienceByUserID(id);
     }
 
     @GetMapping("/experiences/getAll")
@@ -48,4 +55,3 @@ public class ExperienceController {
         return experienceService.deleteExperience(id);
     }
 }
-

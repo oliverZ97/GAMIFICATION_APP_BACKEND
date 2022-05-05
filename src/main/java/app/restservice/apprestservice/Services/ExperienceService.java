@@ -8,13 +8,15 @@ import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.ExperienceRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 @Service
 public class ExperienceService {
-   
+
     @Autowired
     private ExperienceRepository experienceRepository;
 
@@ -23,6 +25,14 @@ public class ExperienceService {
     public Experience getExperience(Long id) {
         if (experienceRepository.findById(id).isPresent()) {
             return experienceRepository.findById(id).get();
+        } else {
+            throw new ResourceNotFoundException("no experience found at id" + id);
+        }
+    }
+
+    public Experience getExperienceByUserID(Long id) {
+        if (experienceRepository.findById(id).isPresent()) {
+            return experienceRepository.getExperienceByUserID(id).get();
         } else {
             throw new ResourceNotFoundException("no experience found at id" + id);
         }
@@ -41,7 +51,6 @@ public class ExperienceService {
         copyPropertiesOfEntity.copyNonNullProperties(experienceRequest, experience);
         return experienceRepository.save(experience);
     }
-
 
     public ResponseEntity<?> deleteExperience(long id) {
         return experienceRepository.findById(id)

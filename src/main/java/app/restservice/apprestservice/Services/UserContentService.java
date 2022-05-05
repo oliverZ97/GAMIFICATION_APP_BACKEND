@@ -1,5 +1,9 @@
 package app.restservice.apprestservice.Services;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
@@ -7,14 +11,9 @@ import app.restservice.apprestservice.Entities.UserContent;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.UserContentRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-
 @Service
 public class UserContentService {
-   
+
     @Autowired
     private UserContentRepository userContentRepository;
 
@@ -41,7 +40,6 @@ public class UserContentService {
         copyPropertiesOfEntity.copyNonNullProperties(userContentRequest, userContent);
         return userContentRepository.save(userContent);
     }
-
 
     public ResponseEntity<?> deleteUserContent(long id) {
         return userContentRepository.findById(id)

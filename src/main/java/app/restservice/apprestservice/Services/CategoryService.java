@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 public class CategoryService {
-   
+
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -41,7 +41,6 @@ public class CategoryService {
         copyPropertiesOfEntity.copyNonNullProperties(categoryRequest, category);
         return categoryRepository.save(category);
     }
-
 
     public ResponseEntity<?> deleteCategory(long id) {
         return categoryRepository.findById(id)

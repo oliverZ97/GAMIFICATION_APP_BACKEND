@@ -39,9 +39,13 @@ public class UserCategoryService {
     }
 
     public UserCategory updateUserCategory(UserCategory userCategoryRequest, long id) {
-        UserCategory UserCategory = getUserCategory(id);
-        copyPropertiesOfEntity.copyNonNullProperties(userCategoryRequest, UserCategory);
-        return userCategoryRepository.save(UserCategory);
+        // UserCategory userCategory = getUserCategory(id);
+        // System.out.println(userCategoryRequest);
+        // System.out.println(userCategory);
+        // copyPropertiesOfEntity.copyNonNullProperties(userCategoryRequest,
+        // userCategory);
+        // System.out.println(userCategory);
+        return userCategoryRepository.save(userCategoryRequest);
     }
 
     public ResponseEntity<?> deleteUserCategory(long id) {

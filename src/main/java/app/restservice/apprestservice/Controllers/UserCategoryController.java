@@ -50,8 +50,14 @@ public class UserCategoryController {
     }
 
     @PutMapping("/usercategories/update/{id}")
-    public UserCategory updateUserCategory(@PathVariable Long id, @RequestBody UserCategory userCategoryRequest) {
-        return userCategoryService.updateUserCategory(userCategoryRequest, id);
+    public ResponseEntity<Object> updateUserCategory(@PathVariable Long id,
+            @RequestBody UserCategory userCategoryRequest) {
+        UserCategory resultObj = userCategoryService.updateUserCategory(userCategoryRequest, id);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("message", "OK");
+        map.put("status", HttpStatus.OK);
+        map.put("data", resultObj);
+        return new ResponseEntity<Object>(map, HttpStatus.OK);
     }
 
     @DeleteMapping("/usercategories/delete/{id}")

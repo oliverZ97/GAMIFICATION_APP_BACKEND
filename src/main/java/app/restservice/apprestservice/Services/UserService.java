@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService  implements UserDetailsService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -36,6 +36,7 @@ public class UserService  implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 new ArrayList<>());
     }
+
     public User getUserByEmail(String username) {
         Optional<User> useroptional = userRepository.getUserByUsername(username);
         if (useroptional.isPresent()) {
@@ -57,16 +58,16 @@ public class UserService  implements UserDetailsService {
         }
     }
 
-    public List<User> getAllQuestions() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     public User setUser(User user) {
 
-            User newUser = new User();
-            newUser.setEmail(user.getEmail());
-            newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            return userRepository.save(newUser);
+        User newUser = new User();
+        newUser.setEmail(user.getEmail());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(newUser);
     }
 
     public User updateUser(User userRequest, long id) {
@@ -75,7 +76,6 @@ public class UserService  implements UserDetailsService {
         return userRepository.save(user);
     }
 
-
     public ResponseEntity<?> deleteUser(long id) {
         return userRepository.findById(id)
                 .map(student -> {
@@ -83,6 +83,5 @@ public class UserService  implements UserDetailsService {
                     return ResponseEntity.ok().build();
                 }).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
     }
-
 
 }

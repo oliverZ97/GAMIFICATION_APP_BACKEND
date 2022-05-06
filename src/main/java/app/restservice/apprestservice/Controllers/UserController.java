@@ -32,33 +32,32 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public UserAndToken createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
         if (!userService.getUserByEmail(authenticationRequest.getUsername()).equals(null)) {
 
-                authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-                final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
-                final String token = jwtTokenUtil.generateToken(userDetails);
-                User user = userService.getUserByEmail(authenticationRequest.getUsername());
-                UserAndToken thisToken = new UserAndToken(user, token);
-                return thisToken;
+            authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+            final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
+            final String token = jwtTokenUtil.generateToken(userDetails);
+            User user = userService.getUserByEmail(authenticationRequest.getUsername());
+            UserAndToken thisToken = new UserAndToken(user, token);
+            return thisToken;
         } else {
             throw new ResourceNotFoundException("there is no user with that username");
         }
     }
 
-
     @PostMapping("/register")
-    public ResponseEntity<?> saveUser(@RequestBody User user, BindingResult result, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> saveUser(@RequestBody User user, BindingResult result, HttpServletRequest request)
+            throws Exception {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
         } else {
             if (userService.checkifUsernameIsAlreadyTaken(user.getEmail())) {
                 return ResponseEntity.badRequest().body("username is already taken");
             } else {
-               userService.setUser(user);
+                userService.setUser(user);
                 return ResponseEntity.status(HttpStatus.OK).body("user got saved sucessfully");
             }
         }
@@ -67,19 +66,19 @@ public class UserController {
     private void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        }
-        catch (BadCredentialsException e) {
+        } catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
     }
+
     @GetMapping("/users/get/{id}")
     public User getUser(@PathVariable Long id) {
         return userService.getUser(id);
     }
 
     @GetMapping("/users/getAll")
-    public List<User> getAllQuestions() {
-        return userService.getAllQuestions();
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     @PutMapping("/users/update/{id}")
@@ -92,4 +91,3 @@ public class UserController {
         return userService.deleteUser(id);
     }
 }
-

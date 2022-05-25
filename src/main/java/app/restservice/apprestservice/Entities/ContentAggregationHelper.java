@@ -2,23 +2,13 @@ package app.restservice.apprestservice.Entities;
 
 import lombok.*;
 
-import java.util.List;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
-@Entity
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor
 @ToString
-public class Content {
-
-    @Id
-    @GeneratedValue(generator = "content_generator")
-    @SequenceGenerator(name = "content_generator", sequenceName = "content_sequence", initialValue = 1)
-    @Getter
-    @Setter
-    private long id;
+public class ContentAggregationHelper {
 
     @Getter
     @Setter
@@ -34,12 +24,6 @@ public class Content {
     @Setter
     @NotEmpty
     private String topic_IDs;
-
-    @Getter
-    @Setter
-    @ManyToMany
-    @JoinColumn(name = "topic_ids")
-    private List<Topic> topics;
 
     @Getter
     @Setter

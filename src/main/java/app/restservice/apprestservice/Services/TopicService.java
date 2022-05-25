@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.Topic;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
+import app.restservice.apprestservice.Repositories.CategoryRepository;
 import app.restservice.apprestservice.Repositories.TopicRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,12 @@ import java.util.List;
 
 @Service
 public class TopicService {
-   
+
     @Autowired
     private TopicRepository topicRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
 
@@ -32,6 +36,14 @@ public class TopicService {
         return topicRepository.findAll();
     }
 
+    public List<Topic> getTopicsByCategoryID(Long id) {
+        if (categoryRepository.findById(id).isPresent()) {
+            return topicRepository.getTopicsByCategoryId(id);
+        } else {
+            throw new ResourceNotFoundException("no category found at id" + id);
+        }
+    }
+
     public Topic setTopic(Topic topic) {
         return topicRepository.save(topic);
     }
@@ -41,7 +53,6 @@ public class TopicService {
         copyPropertiesOfEntity.copyNonNullProperties(topicRequest, topic);
         return topicRepository.save(topic);
     }
-
 
     public ResponseEntity<?> deleteTopic(long id) {
         return topicRepository.findById(id)

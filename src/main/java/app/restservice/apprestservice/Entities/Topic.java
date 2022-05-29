@@ -1,4 +1,5 @@
 package app.restservice.apprestservice.Entities;
+
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,4 +26,9 @@ public class Topic {
     @Getter
     @Setter
     Long category_ID;
+
+    @Getter
+    @Setter
+    @NotEmpty
+    private String minLevel;
 }

@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 public class UserTopicService {
-   
+
     @Autowired
     private UserTopicRepository userTopicRepository;
 
@@ -26,6 +26,10 @@ public class UserTopicService {
         } else {
             throw new ResourceNotFoundException("no user topic found at id" + id);
         }
+    }
+
+    public List<UserTopic> getUserTopicsByUserID(Long id) {
+        return userTopicRepository.getUserTopicsByUserID(id);
     }
 
     public List<UserTopic> getAllUserTopics() {
@@ -41,7 +45,6 @@ public class UserTopicService {
         copyPropertiesOfEntity.copyNonNullProperties(userTopicRequest, userTopic);
         return userTopicRepository.save(userTopic);
     }
-
 
     public ResponseEntity<?> deleteUserTopic(long id) {
         return userTopicRepository.findById(id)

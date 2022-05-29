@@ -23,6 +23,11 @@ public class UserTopicController {
         return userTopicService.getUserTopic(id);
     }
 
+    @GetMapping("/usertopics/getbyuserid/{id}")
+    public List<UserTopic> getUserTopicsByUserID(@PathVariable Long id) {
+        return userTopicService.getUserTopicsByUserID(id);
+    }
+
     @GetMapping("/usertopics/getAll")
     public List<UserTopic> getAllUserTopics() {
         return userTopicService.getAllUserTopics();
@@ -48,4 +53,3 @@ public class UserTopicController {
         return userTopicService.deleteUserTopic(id);
     }
 }
-

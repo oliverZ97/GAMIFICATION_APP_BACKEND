@@ -35,6 +35,11 @@ public class UserCategoryController {
         return userCategoryService.getUserCategoriesByUserID(id);
     }
 
+    @GetMapping("/usercategories/getfavourites/{id}")
+    public List<UserCategory> getUserFavouriteCategoriesByUserID(@PathVariable Long id) {
+        return userCategoryService.getUserFavouriteCategoriesByUserID(id);
+    }
+
     @PostMapping("/usercategories/set")
     public ResponseEntity<Object> setUserCategory(@Valid @RequestBody UserCategory userCategory, BindingResult result) {
         if (result.hasErrors()) {

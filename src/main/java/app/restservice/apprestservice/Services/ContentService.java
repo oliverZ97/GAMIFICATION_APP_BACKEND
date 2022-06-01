@@ -47,6 +47,14 @@ public class ContentService {
         }
     }
 
+    public List<Content> getRandomContentByTopicId(Long id) {
+        if (topicRepository.findById(id).isPresent()) {
+            return contentRepository.getRandomContentByTopicId(id);
+        } else {
+            throw new ResourceNotFoundException("no topic found with id" + id);
+        }
+    }
+
     public List<Content> getContentByCategoryId(Long id) {
         List<Topic> topics = topicRepository.getTopicsByCategoryId(id);
         List<Content> result = new ArrayList<Content>();

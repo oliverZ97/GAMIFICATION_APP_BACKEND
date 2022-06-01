@@ -41,6 +41,11 @@ public class ContentController {
         return contentService.getContentByTopicId(id);
     }
 
+    @GetMapping("/contents/getrandombytopicid/{id}")
+    public List<Content> getRandomContentByTopicId(@PathVariable Long id) {
+        return contentService.getRandomContentByTopicId(id);
+    }
+
     @GetMapping("/contents/getbycategoryid/{id}")
     public List<Content> getContentByCategoryId(@PathVariable Long id) {
         return contentService.getContentByCategoryId(id);

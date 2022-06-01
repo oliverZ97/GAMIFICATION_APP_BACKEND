@@ -32,6 +32,10 @@ public class UserTopicService {
         return userTopicRepository.getUserTopicsByUserID(id);
     }
 
+    public List<UserTopic> getUserFavouriteTopicsByUserID(Long id) {
+        return userTopicRepository.getUserFavouriteTopicsByUserID(id);
+    }
+
     public List<UserTopic> getAllUserTopics() {
         return userTopicRepository.findAll();
     }

@@ -30,6 +30,10 @@ public class UserCategoryService {
         return userCategoryRepository.getUserCategoriesByUserID(id);
     }
 
+    public List<UserCategory> getUserFavouriteCategoriesByUserID(Long id) {
+        return userCategoryRepository.getUserFavouriteCategoriesByUserID(id);
+    }
+
     public List<UserCategory> getAllUserCategories() {
         return userCategoryRepository.findAll();
     }

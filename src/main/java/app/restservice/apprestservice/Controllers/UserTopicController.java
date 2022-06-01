@@ -28,6 +28,11 @@ public class UserTopicController {
         return userTopicService.getUserTopicsByUserID(id);
     }
 
+    @GetMapping("/usertopics/getfavourites/{id}")
+    public List<UserTopic> getUserFavouriteTopicsByUserID(@PathVariable Long id) {
+        return userTopicService.getUserFavouriteTopicsByUserID(id);
+    }
+
     @GetMapping("/usertopics/getAll")
     public List<UserTopic> getAllUserTopics() {
         return userTopicService.getAllUserTopics();

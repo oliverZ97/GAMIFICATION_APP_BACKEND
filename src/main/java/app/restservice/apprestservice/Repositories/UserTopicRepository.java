@@ -12,4 +12,7 @@ import app.restservice.apprestservice.Entities.UserTopic;
 public interface UserTopicRepository extends JpaRepository<UserTopic, Long> {
     @Query(value = "SELECT * FROM user_topic u WHERE u.user_id = ?1", nativeQuery = true)
     List<UserTopic> getUserTopicsByUserID(long user_id);
+
+    @Query(value = "SELECT * FROM user_topic u WHERE u.user_id = ?1 AND u.favourite = 1", nativeQuery = true)
+    List<UserTopic> getUserFavouriteTopicsByUserID(long user_id);
 }

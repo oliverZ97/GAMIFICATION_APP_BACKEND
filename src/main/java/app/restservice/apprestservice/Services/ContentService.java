@@ -4,10 +4,16 @@ import org.springframework.stereotype.Service;
 
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.Content;
+import app.restservice.apprestservice.Entities.DashboardEntry;
 import app.restservice.apprestservice.Entities.Topic;
+import app.restservice.apprestservice.Entities.UserCategory;
+import app.restservice.apprestservice.Entities.UserTopic;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
+import app.restservice.apprestservice.Repositories.CategoryRepository;
 import app.restservice.apprestservice.Repositories.ContentRepository;
 import app.restservice.apprestservice.Repositories.TopicRepository;
+import app.restservice.apprestservice.Repositories.UserCategoryRepository;
+import app.restservice.apprestservice.Repositories.UserTopicRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +30,15 @@ public class ContentService {
 
     @Autowired
     private TopicRepository topicRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private UserTopicRepository userTopicRepository;
+
+    @Autowired
+    private UserCategoryRepository userCategoryRepository;
 
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
 
@@ -47,11 +62,54 @@ public class ContentService {
         }
     }
 
-    public List<Content> getRandomContentByTopicId(Long id) {
-        if (topicRepository.findById(id).isPresent()) {
-            return contentRepository.getRandomContentByTopicId(id);
+    public List<DashboardEntry> getDashboardTopicContent(Long user_id) {
+        List<UserTopic> favourites = userTopicRepository.getUserFavouriteTopicsByUserID(user_id);
+        List<DashboardEntry> result = new ArrayList<>();
+        for (int i = 0; i < favourites.size(); i++) {
+            Long topic_id = favourites.get(i).getTopic_ID();
+            String topic_name = topicRepository.getById(topic_id).getName();
+            List<Content> randomContents = getRandomContentByTopicId(topic_id);
+            DashboardEntry entry = new DashboardEntry(topic_name, randomContents);
+            if (randomContents.size() > 0) {
+                result.add(entry);
+            }
+
+        }
+        return result;
+    }
+
+    public List<DashboardEntry> getDashboardCategoryContent(Long user_id) {
+        List<UserCategory> favourites = userCategoryRepository.getUserFavouriteCategoriesByUserID(user_id);
+        List<DashboardEntry> result = new ArrayList<>();
+        for (int i = 0; i < favourites.size(); i++) {
+            Long category_id = favourites.get(i).getCategory_ID();
+            String category_name = categoryRepository.getById(category_id).getName();
+            List<Topic> topics = topicRepository.getTopicsByCategoryId(category_id);
+            int rdm1 = (int) (Math.random() * topics.size());
+            int rdm2 = (int) (Math.random() * topics.size());
+            if (topics.size() > 0) {
+                List<Content> randomContents = getRandomContentByTopicId(topics.get(rdm1).getId());
+                if (topics.size() >= 2) {
+                    List<Content> randomContents2 = getRandomContentByTopicId(topics.get(rdm2).getId());
+                    randomContents.addAll(randomContents2);
+                }
+
+                DashboardEntry entry = new DashboardEntry(category_name, new ArrayList<Content>(
+                        new HashSet<Content>(randomContents)));
+                if (randomContents.size() > 0) {
+                    result.add(entry);
+                }
+            }
+
+        }
+        return result;
+    }
+
+    public List<Content> getRandomContentByTopicId(Long topic_id) {
+        if (topicRepository.findById(topic_id).isPresent()) {
+            return contentRepository.getRandomContentByTopicId(topic_id.toString());
         } else {
-            throw new ResourceNotFoundException("no topic found with id" + id);
+            throw new ResourceNotFoundException("no topic found with id" + topic_id);
         }
     }
 

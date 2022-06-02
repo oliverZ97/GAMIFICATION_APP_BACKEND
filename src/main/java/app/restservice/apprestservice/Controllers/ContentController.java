@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import app.restservice.apprestservice.Entities.Content;
 import app.restservice.apprestservice.Entities.ContentAggregationHelper;
+import app.restservice.apprestservice.Entities.DashboardEntry;
 import app.restservice.apprestservice.Entities.Topic;
 import app.restservice.apprestservice.Services.ContentService;
 import app.restservice.apprestservice.Services.TopicService;
@@ -44,6 +45,16 @@ public class ContentController {
     @GetMapping("/contents/getrandombytopicid/{id}")
     public List<Content> getRandomContentByTopicId(@PathVariable Long id) {
         return contentService.getRandomContentByTopicId(id);
+    }
+
+    @GetMapping("/contents/getdashboardtopiccontent/{id}")
+    public List<DashboardEntry> getDashboardTopicContent(@PathVariable Long id) {
+        return contentService.getDashboardTopicContent(id);
+    }
+
+    @GetMapping("/contents/getdashboardcategorycontent/{id}")
+    public List<DashboardEntry> getDashboardCategoryContent(@PathVariable Long id) {
+        return contentService.getDashboardCategoryContent(id);
     }
 
     @GetMapping("/contents/getbycategoryid/{id}")

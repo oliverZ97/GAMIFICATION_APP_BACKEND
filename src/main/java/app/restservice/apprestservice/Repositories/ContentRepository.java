@@ -13,6 +13,6 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     @Query(value = "SELECT * FROM content e WHERE e.topic_ids LIKE %?1%", nativeQuery = true)
     List<Content> getContentByTopicId(Long topic_ID);
 
-    @Query(value = "SELECT * FROM content c WHERE POSITION(?1 in c.topic_ids) > 0 AND NOT EXISTS (Select content_id FROM user_content u WHERE c.id = u.content_id) LIMIT 2;", nativeQuery = true)
-    List<Content> getRandomContentByTopicId(Long topic_id);
+    @Query(value = "SELECT * FROM content c WHERE POSITION(?1 in c.topic_ids) > 0 AND NOT EXISTS (Select content_id FROM user_content u WHERE c.id = u.content_id) ORDER BY RANDOM() LIMIT 2 ;", nativeQuery = true)
+    List<Content> getRandomContentByTopicId(String topic_id);
 }

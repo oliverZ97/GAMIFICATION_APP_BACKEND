@@ -10,7 +10,10 @@ import app.restservice.apprestservice.Entities.UserTopic;
 import app.restservice.apprestservice.Services.UserTopicService;
 
 import javax.validation.Valid;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class UserTopicController {
@@ -39,18 +42,27 @@ public class UserTopicController {
     }
 
     @PostMapping("/usertopics/set")
-    public ResponseEntity<String> setUserTopic(@Valid @RequestBody UserTopic userTopic, BindingResult result) {
+    public ResponseEntity<Object> setUserTopic(@Valid @RequestBody UserTopic userTopic, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
         } else {
-            userTopicService.setUserTopic(userTopic);
-            return ResponseEntity.status(HttpStatus.OK).body("UserTopic wurde erstellt");
+            UserTopic resultObj = userTopicService.setUserTopic(userTopic);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("message", "OK");
+            map.put("status", HttpStatus.OK);
+            map.put("data", resultObj);
+            return new ResponseEntity<Object>(map, HttpStatus.OK);
         }
     }
 
     @PutMapping("/usertopics/update/{id}")
-    public UserTopic updateUserTopic(@PathVariable Long id, @RequestBody UserTopic userTopicRequest) {
-        return userTopicService.updateUserTopic(userTopicRequest, id);
+    public ResponseEntity<Object> updateUserTopic(@PathVariable Long id, @RequestBody UserTopic userTopicRequest) {
+        UserTopic resultObj = userTopicService.updateUserTopic(userTopicRequest, id);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("message", "OK");
+        map.put("status", HttpStatus.OK);
+        map.put("data", resultObj);
+        return new ResponseEntity<Object>(map, HttpStatus.OK);
     }
 
     @DeleteMapping("/usertopics/delete/{id}")

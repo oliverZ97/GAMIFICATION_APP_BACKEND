@@ -107,7 +107,7 @@ public class ContentService {
 
     public List<Content> getRandomContentByTopicId(Long topic_id) {
         if (topicRepository.findById(topic_id).isPresent()) {
-            return contentRepository.getRandomContentByTopicId(topic_id.toString());
+            return contentRepository.getRandomContentByTopicId(topic_id);
         } else {
             throw new ResourceNotFoundException("no topic found with id" + topic_id);
         }

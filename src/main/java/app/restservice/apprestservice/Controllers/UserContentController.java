@@ -10,7 +10,10 @@ import app.restservice.apprestservice.Entities.UserContent;
 import app.restservice.apprestservice.Services.UserContentService;
 
 import javax.validation.Valid;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class UserContentController {
@@ -29,18 +32,30 @@ public class UserContentController {
     }
 
     @PostMapping("/usercontents/set")
-    public ResponseEntity<String> setUserContent(@Valid @RequestBody UserContent userContent, BindingResult result) {
+    public ResponseEntity<Object> setUserContent(@Valid @RequestBody UserContent userContent, BindingResult result) {
+        System.out.println(userContent);
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
         } else {
-            userContentService.setUserContent(userContent);
-            return ResponseEntity.status(HttpStatus.OK).body("UserContent wurde erstellt");
+            UserContent resultObj = userContentService.setUserContent(userContent);
+            System.out.println(resultObj);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("message", "OK");
+            map.put("status", HttpStatus.OK);
+            map.put("data", resultObj);
+            return new ResponseEntity<Object>(map, HttpStatus.OK);
         }
     }
 
     @PutMapping("/usercontents/update/{id}")
-    public UserContent updateUserContent(@PathVariable Long id, @RequestBody UserContent userContentRequest) {
-        return userContentService.updateUserContent(userContentRequest, id);
+    public ResponseEntity<Object> updateUserContent(@PathVariable Long id,
+            @RequestBody UserContent userContentRequest) {
+        UserContent resultObj = userContentService.updateUserContent(userContentRequest, id);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("message", "OK");
+        map.put("status", HttpStatus.OK);
+        map.put("data", resultObj);
+        return new ResponseEntity<Object>(map, HttpStatus.OK);
     }
 
     @DeleteMapping("/usercontents/delete/{id}")
@@ -48,4 +63,3 @@ public class UserContentController {
         return userContentService.deleteUserContent(id);
     }
 }
-

@@ -1,4 +1,5 @@
 package app.restservice.apprestservice.Entities;
+
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,4 +28,8 @@ public class UserContent {
     @Getter
     @Setter
     private int favourite;
+
+    @Getter
+    @Setter
+    private boolean getReward;
 }

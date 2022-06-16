@@ -27,6 +27,15 @@ public class UserContentService {
         }
     }
 
+    public Boolean checkRewardStatus(Long content_id, Long user_id) {
+        UserContent check = userContentRepository.checkRewardStatus(content_id, user_id);
+        if (check == null || !check.isGetReward()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public List<UserContent> getAllUserContents() {
         return userContentRepository.findAll();
     }

@@ -26,6 +26,11 @@ public class UserContentController {
         return userContentService.getUserContent(id);
     }
 
+    @GetMapping("/usercontents/checkRewardStatus/{content_id}/{user_id}")
+    public Boolean checkContentRewardStatus(@PathVariable Long content_id, @PathVariable Long user_id) {
+        return userContentService.checkRewardStatus(content_id, user_id);
+    }
+
     @GetMapping("/usercontents/getAll")
     public List<UserContent> getAllUserContents() {
         return userContentService.getAllUserContents();

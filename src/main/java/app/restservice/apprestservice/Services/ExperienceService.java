@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.Experience;
+import app.restservice.apprestservice.Entities.UserLog;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.ExperienceRepository;
 
@@ -12,6 +13,7 @@ import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.P
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,6 +21,12 @@ public class ExperienceService {
 
     @Autowired
     private ExperienceRepository experienceRepository;
+
+    @Autowired
+    private LevelService levelService;
+
+    @Autowired
+    private UserLogService userLogService;
 
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
 
@@ -47,8 +55,21 @@ public class ExperienceService {
     }
 
     public Experience updateExperience(Experience experienceRequest, long id) {
+        int level = levelService.checkLevelStatus(experienceRequest.getExperience_value());
         Experience experience = getExperience(id);
+        System.out.println(experienceRequest);
         copyPropertiesOfEntity.copyNonNullProperties(experienceRequest, experience);
+        if (level != experienceRequest.getLevel()) {
+            UserLog entry = new UserLog();
+            entry.setDate_created(LocalDateTime.now().toString());
+            entry.setInfo("level changed");
+            entry.setType(1);
+            entry.setStatus(1);
+            entry.setUser_ID(experience.getUser_ID());
+            userLogService.setUserLog(entry);
+        }
+        experience.setLevel(level);
+
         return experienceRepository.save(experience);
     }
 

@@ -57,7 +57,6 @@ public class ExperienceService {
     public Experience updateExperience(Experience experienceRequest, long id) {
         int level = levelService.checkLevelStatus(experienceRequest.getExperience_value());
         Experience experience = getExperience(id);
-        System.out.println(experienceRequest);
         copyPropertiesOfEntity.copyNonNullProperties(experienceRequest, experience);
         if (level != experienceRequest.getLevel()) {
             UserLog entry = new UserLog();

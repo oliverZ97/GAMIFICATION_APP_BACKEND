@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import app.restservice.apprestservice.Entities.Content;
+import app.restservice.apprestservice.Entities.ContentQuestHelper;
 import app.restservice.apprestservice.Entities.UserQuest;
 import app.restservice.apprestservice.Entities.UserQuestHelper;
 import app.restservice.apprestservice.Services.UserQuestService;
@@ -34,6 +36,12 @@ public class UserQuestController {
         return userQuestService.getActiveUserQuestsByUserId(id);
     }
 
+    @PostMapping("/userquests/checkContentForUserQuest")
+    public List<UserQuestHelper> checkContentForUserQuest(@Valid @RequestBody ContentQuestHelper content,
+            BindingResult result) {
+        return userQuestService.checkContentForUserQuest(content);
+    }
+
     @GetMapping("/userquests/setInitialUserQuests/{id}")
     public void setInitialUserQuests(@PathVariable Long id) {
         userQuestService.addNewUserQuestSet(id, 1);
@@ -59,6 +67,7 @@ public class UserQuestController {
 
     @PutMapping("/userquests/update/{id}")
     public UserQuest updateUserQuest(@PathVariable Long id, @RequestBody UserQuest userQuestRequest) {
+        System.out.println(userQuestRequest);
         return userQuestService.updateUserQuest(userQuestRequest, id);
     }
 

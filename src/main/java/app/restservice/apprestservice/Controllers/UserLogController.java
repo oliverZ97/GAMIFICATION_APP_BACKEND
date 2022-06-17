@@ -33,6 +33,11 @@ public class UserLogController {
         return userLogService.getByUserId(id);
     }
 
+    @GetMapping("/userlogs/getByUserIdAndType/{id}/{type}")
+    public List<UserLog> getUserLogsByUserIdAndType(@PathVariable Long id, @PathVariable int type) {
+        return userLogService.getByUserIdAndType(id, type);
+    }
+
     @PostMapping("/userlogs/set")
     public ResponseEntity<String> setUserLog(@Valid @RequestBody UserLog userLog, BindingResult result) {
         if (result.hasErrors()) {

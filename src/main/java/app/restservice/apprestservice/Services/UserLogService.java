@@ -38,6 +38,10 @@ public class UserLogService {
         return userLogRepository.getUserLogsByUserId(id);
     }
 
+    public List<UserLog> getByUserIdAndType(Long id, int type) {
+        return userLogRepository.getUserLogsByUserIdAndType(id, type);
+    }
+
     public UserLog setUserLog(UserLog userLog) {
         return userLogRepository.save(userLog);
     }

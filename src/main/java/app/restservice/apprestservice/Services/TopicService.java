@@ -3,9 +3,11 @@ package app.restservice.apprestservice.Services;
 import org.springframework.stereotype.Service;
 
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
+import app.restservice.apprestservice.Entities.Content;
 import app.restservice.apprestservice.Entities.Topic;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.CategoryRepository;
+import app.restservice.apprestservice.Repositories.ContentRepository;
 import app.restservice.apprestservice.Repositories.TopicRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class TopicService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private ContentRepository contentRepository;
 
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
 

@@ -11,6 +11,10 @@ public class UserQuestHelper {
 
     @Getter
     @Setter
+    private long id;
+
+    @Getter
+    @Setter
     private long user_ID;
 
     @Getter

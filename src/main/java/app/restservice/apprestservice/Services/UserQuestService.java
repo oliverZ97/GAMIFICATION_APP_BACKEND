@@ -3,7 +3,10 @@ package app.restservice.apprestservice.Services;
 import org.springframework.stereotype.Service;
 
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
+import app.restservice.apprestservice.Entities.ContentQuestHelper;
 import app.restservice.apprestservice.Entities.Quest;
+import app.restservice.apprestservice.Entities.Topic;
+import app.restservice.apprestservice.Entities.UserLog;
 import app.restservice.apprestservice.Entities.UserQuest;
 import app.restservice.apprestservice.Entities.UserQuestHelper;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
@@ -26,6 +29,9 @@ public class UserQuestService {
 
     @Autowired
     private QuestService questService;
+
+    @Autowired
+    private UserLogService userLogService;
 
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
 
@@ -54,9 +60,32 @@ public class UserQuestService {
             uqh.setStart_date(uqs.get(i).getStart_date());
             uqh.setStatus(uqs.get(i).getStatus());
             uqh.setUser_ID(uqs.get(i).getUser_ID());
+            uqh.setId(uqs.get(i).getId());
             uqhs.add(uqh);
         }
         return uqhs;
+    }
+
+    public List<UserQuestHelper> checkContentForUserQuest(ContentQuestHelper helper) {
+        List<UserQuestHelper> uqs = getActiveUserQuestsByUserId(helper.getUser_ID());
+        List<Topic> topics = helper.getTopics();
+        List<UserQuestHelper> result = new ArrayList<UserQuestHelper>();
+        for (int i = 0; i < uqs.size(); i++) {
+            String key = uqs.get(i).getQuest().getKey();
+            try {
+                if (Integer.parseInt(key) <= helper.getNumber_of_words()) {
+                    result.add(uqs.get(i));
+                }
+            } catch (NumberFormatException e) {
+                for (int j = 0; j < topics.size(); j++) {
+                    if (key == topics.get(j).getName()) {
+                        result.add(uqs.get(i));
+                    }
+                }
+            }
+
+        }
+        return result;
     }
 
     public UserQuest setUserQuest(UserQuest userQuest) {
@@ -93,6 +122,15 @@ public class UserQuestService {
     public UserQuest updateUserQuest(UserQuest userQuestRequest, long id) {
         UserQuest userQuest = getUserQuest(id);
         copyPropertiesOfEntity.copyNonNullProperties(userQuestRequest, userQuest);
+        if (userQuestRequest.getProgress_value() >= userQuestRequest.getGoal_value()) {
+            UserLog entry = new UserLog();
+            entry.setDate_created(LocalDateTime.now().toString());
+            entry.setInfo("quest passed");
+            entry.setType(1);
+            entry.setStatus(1);
+            entry.setUser_ID(userQuestRequest.getUser_ID());
+            userLogService.setUserLog(entry);
+        }
         return userQuestRepository.save(userQuest);
     }
 

@@ -50,9 +50,10 @@ public class Quest {
     // Value des entsprechenden Keys z.B. Politik
     @Getter
     @Setter
-    private String value;
+    private int value;
 
-    // Anzahl der entsprechenden zu lesenden contents. z.B. 10 Contents zum topic Politik
+    // Anzahl der entsprechenden zu lesenden contents. z.B. 10 Contents zum topic
+    // Politik
     @Getter
     @Setter
     private int key_count;

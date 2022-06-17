@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import app.restservice.apprestservice.Entities.UserQuest;
+import app.restservice.apprestservice.Entities.UserQuestHelper;
 import app.restservice.apprestservice.Services.UserQuestService;
 
 import javax.validation.Valid;
@@ -26,6 +27,24 @@ public class UserQuestController {
     @GetMapping("/userquests/getAll")
     public List<UserQuest> getAllUserQuests() {
         return userQuestService.getAllUserQuests();
+    }
+
+    @GetMapping("/userquests/getActiveUserQuests/{id}")
+    public List<UserQuestHelper> getActiveUserQuests(@PathVariable Long id) {
+        return userQuestService.getActiveUserQuestsByUserId(id);
+    }
+
+    @GetMapping("/userquests/setInitialUserQuests/{id}")
+    public void setInitialUserQuests(@PathVariable Long id) {
+        userQuestService.addNewUserQuestSet(id, 1);
+        userQuestService.addNewUserQuestSet(id, 2);
+        userQuestService.addNewUserQuestSet(id, 3);
+    }
+
+    @GetMapping("/userquests/setInitialUserQuestsByType/{id}/{type}")
+    public void setInitialUserQuests(@PathVariable Long id, @PathVariable int type) {
+        userQuestService.addNewUserQuestSet(id, type);
+
     }
 
     @PostMapping("/userquests/set")
@@ -48,4 +67,3 @@ public class UserQuestController {
         return userQuestService.deleteUserQuest(id);
     }
 }
-

@@ -4,18 +4,10 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor
 @ToString
-public class UserQuest {
-
-    @Id
-    @GeneratedValue(generator = "userquest_generator")
-    @SequenceGenerator(name = "userquest_generator", sequenceName = "userquest_sequence", initialValue = 1)
-    @Getter
-    @Setter
-    private long id;
+public class UserQuestHelper {
 
     @Getter
     @Setter
@@ -23,7 +15,7 @@ public class UserQuest {
 
     @Getter
     @Setter
-    private long quest_ID;
+    private Quest quest;
 
     @Getter
     @Setter

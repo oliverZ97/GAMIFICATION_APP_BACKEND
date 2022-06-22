@@ -126,7 +126,7 @@ public class UserQuestService {
             UserLog entry = new UserLog();
             entry.setDate_created(LocalDateTime.now().toString());
             entry.setInfo("quest passed");
-            entry.setType(1);
+            entry.setType(2);
             entry.setStatus(1);
             entry.setUser_ID(userQuestRequest.getUser_ID());
             userLogService.setUserLog(entry);

@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import app.restservice.apprestservice.Entities.UserAchievement;
+import app.restservice.apprestservice.Entities.UserAchievementHelper;
 import app.restservice.apprestservice.Services.UserAchievementService;
 
 import javax.validation.Valid;
@@ -28,8 +29,19 @@ public class UserAchievementController {
         return userAchievementService.getAllUserAchievements();
     }
 
+    @GetMapping("/userachievements/checkUserAchievements/{id}")
+    public void checkUserAchievements(@PathVariable Long id) {
+        userAchievementService.checkUserAchievements(id);
+    }
+
+    @GetMapping("/userachievements/getByUserId/{id}")
+    public List<UserAchievementHelper> getByUserId(@PathVariable Long id) {
+        return userAchievementService.getByUserId(id);
+    }
+
     @PostMapping("/userachievements/set")
-    public ResponseEntity<String> setUserAchievement(@Valid @RequestBody UserAchievement userAchievement, BindingResult result) {
+    public ResponseEntity<String> setUserAchievement(@Valid @RequestBody UserAchievement userAchievement,
+            BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
         } else {
@@ -39,7 +51,8 @@ public class UserAchievementController {
     }
 
     @PutMapping("/userachievements/update/{id}")
-    public UserAchievement updateUserAchievement(@PathVariable Long id, @RequestBody UserAchievement userAchievementRequest) {
+    public UserAchievement updateUserAchievement(@PathVariable Long id,
+            @RequestBody UserAchievement userAchievementRequest) {
         return userAchievementService.updateUserAchievement(userAchievementRequest, id);
     }
 
@@ -48,4 +61,3 @@ public class UserAchievementController {
         return userAchievementService.deleteUserAchievement(id);
     }
 }
-

@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 public class AchievementService {
-   
+
     @Autowired
     private AchievementRepository achievementRepository;
 
@@ -41,7 +41,6 @@ public class AchievementService {
         copyPropertiesOfEntity.copyNonNullProperties(achievementRequest, achievement);
         return achievementRepository.save(achievement);
     }
-
 
     public ResponseEntity<?> deleteAchievement(long id) {
         return achievementRepository.findById(id)

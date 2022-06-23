@@ -1,4 +1,5 @@
 package app.restservice.apprestservice.Entities;
+
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,6 +22,19 @@ public class Achievement {
     @Setter
     @NotEmpty
     private String title;
+
+    @Getter
+    @Setter
+    @NotEmpty
+    private String key;
+
+    @Getter
+    @Setter
+    private int key_count;
+
+    @Getter
+    @Setter
+    private String group;
 
     @Getter
     @Setter

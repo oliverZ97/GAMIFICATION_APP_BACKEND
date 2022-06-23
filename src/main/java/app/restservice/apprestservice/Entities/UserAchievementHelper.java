@@ -4,11 +4,10 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor
 @ToString
-public class UserAchievement {
+public class UserAchievementHelper {
 
     @Id
     @GeneratedValue(generator = "userachievement_generator")
@@ -23,7 +22,7 @@ public class UserAchievement {
 
     @Getter
     @Setter
-    private long achievement_ID;
+    private Achievement achievement;
 
     @Getter
     @Setter

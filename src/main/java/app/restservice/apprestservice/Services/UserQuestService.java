@@ -1,7 +1,6 @@
 package app.restservice.apprestservice.Services;
 
 import org.springframework.stereotype.Service;
-
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.ContentQuestHelper;
 import app.restservice.apprestservice.Entities.Quest;
@@ -12,19 +11,13 @@ import app.restservice.apprestservice.Entities.UserQuest;
 import app.restservice.apprestservice.Entities.UserQuestHelper;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.UserQuestRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
-
-import java.sql.Time;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service

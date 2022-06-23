@@ -36,17 +36,15 @@ public class UserQuestController {
         return userQuestService.getActiveUserQuestsByUserId(id);
     }
 
+    @GetMapping("/userquests/checkIfQuestsAreExpired/{id}")
+    public void checkIfQuestsAreExpired(@PathVariable Long id) {
+        userQuestService.checkIfQuestsAreExpired(id);
+    }
+
     @PostMapping("/userquests/checkContentForUserQuest")
     public List<UserQuestHelper> checkContentForUserQuest(@Valid @RequestBody ContentQuestHelper content,
             BindingResult result) {
         return userQuestService.checkContentForUserQuest(content);
-    }
-
-    @GetMapping("/userquests/setInitialUserQuests/{id}")
-    public void setInitialUserQuests(@PathVariable Long id) {
-        userQuestService.addNewUserQuestSet(id, 1);
-        userQuestService.addNewUserQuestSet(id, 2);
-        userQuestService.addNewUserQuestSet(id, 3);
     }
 
     @GetMapping("/userquests/setInitialUserQuestsByType/{id}/{type}")
@@ -67,7 +65,6 @@ public class UserQuestController {
 
     @PutMapping("/userquests/update/{id}")
     public UserQuest updateUserQuest(@PathVariable Long id, @RequestBody UserQuest userQuestRequest) {
-        System.out.println(userQuestRequest);
         return userQuestService.updateUserQuest(userQuestRequest, id);
     }
 

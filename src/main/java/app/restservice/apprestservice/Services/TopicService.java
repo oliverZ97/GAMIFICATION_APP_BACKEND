@@ -13,6 +13,7 @@ import app.restservice.apprestservice.Repositories.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -47,6 +48,17 @@ public class TopicService {
         } else {
             throw new ResourceNotFoundException("no category found at id" + id);
         }
+    }
+
+    public List<Topic> getTopicsByIdString(String topic_ids) {
+        List<Topic> result = new ArrayList<Topic>();
+        String tmp = topic_ids.replace("[", "").replace("]", "");
+        String[] ids = tmp.split(",");
+        for (int i = 0; i < ids.length; i++) {
+            Topic t = getTopic(Long.parseLong(ids[i]));
+            result.add(t);
+        }
+        return result;
     }
 
     public Topic setTopic(Topic topic) {

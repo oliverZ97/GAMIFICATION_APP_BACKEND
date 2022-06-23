@@ -52,17 +52,5 @@ public class CreateDefaultData implements CommandLineRunner {
         // questService.createRandomWordCountQuest(3);
         // System.out.println("Quests erzeugt");
 
-        List<TimeLog> dailyLogs = timeLogService.getTimeLogsByType(1);
-        List<TimeLog> weeklyLogs = timeLogService.getTimeLogsByType(2);
-        List<TimeLog> monthlyLogs = timeLogService.getTimeLogsByType(3);
-        if (dailyLogs.size() > 0) {
-
-        } else {
-            LocalDateTime now = LocalDateTime.now();
-
-            TimeLog daily = new TimeLog();
-            daily.setType(1);
-            daily.setStatus(1);
-        }
     }
 }

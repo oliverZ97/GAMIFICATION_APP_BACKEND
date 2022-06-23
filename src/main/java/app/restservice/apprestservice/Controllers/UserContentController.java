@@ -38,12 +38,10 @@ public class UserContentController {
 
     @PostMapping("/usercontents/set")
     public ResponseEntity<Object> setUserContent(@Valid @RequestBody UserContent userContent, BindingResult result) {
-        System.out.println(userContent);
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors().toString());
         } else {
             UserContent resultObj = userContentService.setUserContent(userContent);
-            System.out.println(resultObj);
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("message", "OK");
             map.put("status", HttpStatus.OK);

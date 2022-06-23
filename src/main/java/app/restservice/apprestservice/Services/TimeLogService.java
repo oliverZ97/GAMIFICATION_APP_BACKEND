@@ -13,6 +13,8 @@ import app.restservice.apprestservice.Repositories.UserQuestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,12 +37,28 @@ public class TimeLogService {
         return timeLogRepository.findAll();
     }
 
-    public List<TimeLog> getTimeLogsByType(int type) {
-        return timeLogRepository.getTimeLogsByType(type);
+    public TimeLog getTimeLogByType(int type) {
+        return timeLogRepository.getTimeLogByType(type);
     }
 
     public TimeLog setTimeLog(TimeLog timeLog) {
         return timeLogRepository.save(timeLog);
+    }
+
+    public TimeLog setTimeLog(String date_start, String date_end, String info, int status, int type) {
+        TimeLog log = new TimeLog();
+        LocalDateTime now = LocalDateTime.now();
+        log.setDate_created(now.toString());
+        log.setDate_end(date_end);
+        log.setDate_start(date_start);
+        log.setInfo(info);
+        log.setStatus(status);
+        log.setType(type);
+        return timeLogRepository.save(log);
+    }
+
+    public LocalDateTime todayAt(int hour, int minute) {
+        return LocalDate.now().atTime(hour, minute);
     }
 
     public TimeLog updateTimeLog(TimeLog timeLogRequest, long id) {

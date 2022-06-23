@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.ContentQuestHelper;
 import app.restservice.apprestservice.Entities.Quest;
+import app.restservice.apprestservice.Entities.TimeLog;
 import app.restservice.apprestservice.Entities.Topic;
 import app.restservice.apprestservice.Entities.UserLog;
 import app.restservice.apprestservice.Entities.UserQuest;
@@ -16,9 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 
+import java.sql.Time;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -32,6 +38,12 @@ public class UserQuestService {
 
     @Autowired
     private UserLogService userLogService;
+
+    @Autowired
+    private TimeLogService timeLogService;
+
+    @Autowired
+    private TopicService topicService;
 
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
 
@@ -66,9 +78,64 @@ public class UserQuestService {
         return uqhs;
     }
 
+    public void checkIfQuestsAreExpired(Long user_id) {
+        LocalDateTime now = LocalDateTime.now();
+        TimeLog dailyLog = timeLogService.getTimeLogByType(1);
+        TimeLog weeklyLog = timeLogService.getTimeLogByType(2);
+        TimeLog monthlyLog = timeLogService.getTimeLogByType(3);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+        if (dailyLog == null) {
+            LocalDateTime start = timeLogService.todayAt(4, 0);
+            LocalDateTime end = start.plusHours(24);
+            timeLogService.setTimeLog(start.toString(), end.toString(), "", 1, 1);
+            addNewUserQuestSet(user_id, 1);
+        } else {
+            LocalDateTime daily = LocalDateTime.parse(dailyLog.getDate_end(), formatter);
+            if (now.isAfter(daily)) {
+                LocalDateTime end = daily.plusHours(24);
+                dailyLog.setStatus(3);
+                timeLogService.updateTimeLog(dailyLog, dailyLog.getId());
+                timeLogService.setTimeLog(daily.toString(), end.toString(), "", 1, 1);
+                addNewUserQuestSet(user_id, 1);
+            }
+        }
+        if (weeklyLog == null) {
+            LocalDateTime start = timeLogService.todayAt(4, 0).with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+            LocalDateTime end = start.plusDays(7);
+            timeLogService.setTimeLog(start.toString(), end.toString(), "", 1, 2);
+            addNewUserQuestSet(user_id, 2);
+        } else {
+            LocalDateTime weekly = LocalDateTime.parse(weeklyLog.getDate_end(), formatter);
+            if (now.isAfter(weekly)) {
+                LocalDateTime end = weekly.plusDays(7);
+                weeklyLog.setStatus(3);
+                timeLogService.updateTimeLog(weeklyLog, weeklyLog.getId());
+                timeLogService.setTimeLog(weekly.toString(), end.toString(), "", 1, 2);
+                addNewUserQuestSet(user_id, 2);
+            }
+        }
+        if (monthlyLog == null) {
+            LocalDateTime start = timeLogService.todayAt(4, 0).withDayOfMonth(1);
+            LocalDateTime end = start.plusMonths(1);
+            timeLogService.setTimeLog(start.toString(), end.toString(), "", 1, 3);
+            addNewUserQuestSet(user_id, 3);
+        } else {
+            LocalDateTime monthly = LocalDateTime.parse(monthlyLog.getDate_end(), formatter);
+            if (now.isAfter(monthly)) {
+                LocalDateTime end = monthly.plusMonths(1);
+                monthlyLog.setStatus(3);
+                timeLogService.updateTimeLog(monthlyLog, monthlyLog.getId());
+                timeLogService.setTimeLog(monthly.toString(), end.toString(), "", 1, 3);
+                addNewUserQuestSet(user_id, 3);
+            }
+        }
+
+    }
+
     public List<UserQuestHelper> checkContentForUserQuest(ContentQuestHelper helper) {
         List<UserQuestHelper> uqs = getActiveUserQuestsByUserId(helper.getUser_ID());
-        List<Topic> topics = helper.getTopics();
+        List<Topic> topics = topicService.getTopicsByIdString(helper.getTopic_IDs());
         List<UserQuestHelper> result = new ArrayList<UserQuestHelper>();
         for (int i = 0; i < uqs.size(); i++) {
             String key = uqs.get(i).getQuest().getKey();
@@ -78,7 +145,7 @@ public class UserQuestService {
                 }
             } catch (NumberFormatException e) {
                 for (int j = 0; j < topics.size(); j++) {
-                    if (key == topics.get(j).getName()) {
+                    if (key.equals(topics.get(j).getName())) {
                         result.add(uqs.get(i));
                     }
                 }
@@ -94,7 +161,7 @@ public class UserQuestService {
 
     public void addNewUserQuestSet(long user_id, int type) {
         List<Quest> quests = questService.getRandomQuestSet(type);
-        LocalDateTime now = LocalDateTime.now();
+        TimeLog log = timeLogService.getTimeLogByType(type);
         for (int i = 0; i < quests.size(); i++) {
             UserQuest uq = new UserQuest();
             uq.setQuest_ID(quests.get(i).getId());
@@ -102,19 +169,8 @@ public class UserQuestService {
             uq.setStatus(1);
             uq.setProgress_value(0);
             uq.setUser_ID(user_id);
-            uq.setStart_date(now.toString());
-            switch (type) {
-                case 1:
-                    uq.setEnd_date(now.plusHours(24).toString());
-                    break;
-                case 2:
-                    uq.setEnd_date(now.plusWeeks(1).toString());
-                    break;
-                case 3:
-                    uq.setEnd_date(now.plusMonths(1).toString());
-                    break;
-
-            }
+            uq.setStart_date(log.getDate_start());
+            uq.setEnd_date(log.getDate_end());
             setUserQuest(uq);
         }
     }
@@ -122,7 +178,8 @@ public class UserQuestService {
     public UserQuest updateUserQuest(UserQuest userQuestRequest, long id) {
         UserQuest userQuest = getUserQuest(id);
         copyPropertiesOfEntity.copyNonNullProperties(userQuestRequest, userQuest);
-        if (userQuestRequest.getProgress_value() >= userQuestRequest.getGoal_value()) {
+        if (userQuestRequest.getProgress_value() >= userQuestRequest.getGoal_value()
+                && userQuestRequest.getStatus() == 1) {
             UserLog entry = new UserLog();
             entry.setDate_created(LocalDateTime.now().toString());
             entry.setInfo("quest passed");

@@ -75,7 +75,6 @@ public class ContentController {
                 Topic topic = topicService.getTopic(Long.parseLong(substrings[i]));
                 topics.add(topic);
             }
-            System.out.println(substrings);
             Content content = new Content();
             content.setAuthor(contentRequest.getAuthor());
             content.setContent(contentRequest.getContent());

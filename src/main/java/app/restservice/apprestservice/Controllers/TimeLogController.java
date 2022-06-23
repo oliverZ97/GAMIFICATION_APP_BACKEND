@@ -29,9 +29,9 @@ public class TimeLogController {
         return timeLogService.getAllTimeLogs();
     }
 
-    @GetMapping("/timelogs/getTimeLogsByType/{type}")
-    public List<TimeLog> getTimeLogsByType(@PathVariable int type) {
-        return timeLogService.getTimeLogsByType(type);
+    @GetMapping("/timelogs/getTimeLogByType/{type}")
+    public TimeLog getTimeLogByType(@PathVariable int type) {
+        return timeLogService.getTimeLogByType(type);
     }
 
     @PostMapping("/timelogs/set")

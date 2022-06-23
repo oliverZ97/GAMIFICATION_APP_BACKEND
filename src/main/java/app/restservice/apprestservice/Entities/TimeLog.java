@@ -37,5 +37,9 @@ public class TimeLog {
 
     @Getter
     @Setter
+    private String date_start;
+
+    @Getter
+    @Setter
     private String date_end;
 }

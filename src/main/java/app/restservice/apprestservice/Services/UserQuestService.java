@@ -71,6 +71,10 @@ public class UserQuestService {
         return uqhs;
     }
 
+    public List<UserQuest> getActiveUserQuestsByUserIdAndType(Long user_id, int type) {
+        return userQuestRepository.getActiveUserQuestsByUserIdAndType(user_id, type);
+    }
+
     public void checkIfQuestsAreExpired(Long user_id) {
         LocalDateTime now = LocalDateTime.now();
         TimeLog dailyLog = timeLogService.getTimeLogByType(1);
@@ -90,6 +94,12 @@ public class UserQuestService {
                 dailyLog.setStatus(3);
                 timeLogService.updateTimeLog(dailyLog, dailyLog.getId());
                 timeLogService.setTimeLog(daily.toString(), end.toString(), "", 1, 1);
+                List<UserQuest> oldQuests = getActiveUserQuestsByUserIdAndType(user_id, 1);
+                for (int i = 0; i < oldQuests.size(); i++) {
+                    UserQuest uq = getUserQuest(oldQuests.get(i).getId());
+                    uq.setStatus(4);
+                    updateUserQuest(uq, uq.getId());
+                }
                 addNewUserQuestSet(user_id, 1);
             }
         }
@@ -181,6 +191,7 @@ public class UserQuestService {
             entry.setUser_ID(userQuestRequest.getUser_ID());
             userLogService.setUserLog(entry);
         }
+        System.out.println(userQuest);
         return userQuestRepository.save(userQuest);
     }
 

@@ -38,6 +38,9 @@ public class UserQuestService {
     @Autowired
     private TopicService topicService;
 
+    @Autowired
+    private UserAchievementService userAchievementService;
+
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
 
     public UserQuest getUserQuest(Long id) {
@@ -75,6 +78,17 @@ public class UserQuestService {
         return userQuestRepository.getActiveUserQuestsByUserIdAndType(user_id, type);
     }
 
+    public int getFinishedUserQuestCountByType(Long user_id, int type) {
+        List<UserQuest> finished = userQuestRepository.getFinishedUserQuestsByUserId(user_id);
+        int counter = 0;
+        for (int i = 0; i < finished.size(); i++) {
+            if (questService.getQuest(finished.get(i).getQuest_ID()).getType() == type) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
     public void checkIfQuestsAreExpired(Long user_id) {
         LocalDateTime now = LocalDateTime.now();
         TimeLog dailyLog = timeLogService.getTimeLogByType(1);
@@ -97,7 +111,12 @@ public class UserQuestService {
                 List<UserQuest> oldQuests = getActiveUserQuestsByUserIdAndType(user_id, 1);
                 for (int i = 0; i < oldQuests.size(); i++) {
                     UserQuest uq = getUserQuest(oldQuests.get(i).getId());
-                    uq.setStatus(4);
+                    if (uq.getStatus() == 1) {
+                        uq.setStatus(4);
+                    } else {
+                        uq.setStatus(5);
+                    }
+
                     updateUserQuest(uq, uq.getId());
                 }
                 addNewUserQuestSet(user_id, 1);
@@ -191,7 +210,15 @@ public class UserQuestService {
             entry.setUser_ID(userQuestRequest.getUser_ID());
             userLogService.setUserLog(entry);
         }
-        System.out.println(userQuest);
+        if (questService.getQuest(userQuest.getQuest_ID()).getType() == 1) {
+            userAchievementService.handleUserAchievementByKey(userQuest.getUser_ID(), "daily");
+        }
+        if (questService.getQuest(userQuest.getQuest_ID()).getType() == 2) {
+            userAchievementService.handleUserAchievementByKey(userQuest.getUser_ID(), "weekly");
+        }
+        if (questService.getQuest(userQuest.getQuest_ID()).getType() == 3) {
+            userAchievementService.handleUserAchievementByKey(userQuest.getUser_ID(), "monthly");
+        }
         return userQuestRepository.save(userQuest);
     }
 

@@ -28,9 +28,6 @@ public class QuestService {
     @Autowired
     private CategoryService categoryService;
 
-    @Autowired
-    private ContentService contentService;
-
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
 
     public Quest getQuest(Long id) {
@@ -43,6 +40,10 @@ public class QuestService {
 
     public List<Quest> getAllQuests() {
         return questRepository.findAll();
+    }
+
+    public List<Quest> getAllByType(int type) {
+        return questRepository.getAllByType(type);
     }
 
     public Quest setQuest(Quest quest) {

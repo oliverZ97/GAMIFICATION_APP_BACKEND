@@ -31,6 +31,12 @@ public class UserAchievementService {
     private ExperienceService experienceService;
 
     @Autowired
+    private UserQuestService userQuestService;
+
+    @Autowired
+    private UserContentService userContentService;
+
+    @Autowired
     private UserLogService userLogService;
 
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
@@ -53,6 +59,10 @@ public class UserAchievementService {
 
     public int getUserAchievementCountByAchievementId(long achievement_id) {
         return userAchievementRepository.getUserAchievementCountByAchievementId(achievement_id);
+    }
+
+    public int getFinishedUserAchievementsCountByUserId(Long user_id) {
+        return userAchievementRepository.getFinishedUserAchievementsCountByUserId(user_id);
     }
 
     public List<UserAchievementHelper> getByUserId(Long id) {
@@ -114,45 +124,133 @@ public class UserAchievementService {
     }
 
     public void handleUserAchievementByKey(Long user_id, String key) {
+        List<UserAchievement> list = getUserAchievementsByUserIdAndKey(user_id, key);
+        Experience userExp = experienceService.getExperienceByUserID(user_id);
         switch (key) {
             case "level":
-                handleLevelKey(user_id, key);
+                handleLevelKey(user_id, key, list, userExp);
+                break;
+            case "achievement":
+                handleAchievementKey(user_id, key, list, userExp);
+                break;
+            case "daily":
+                handleDailyKey(user_id, key, list, userExp);
+                break;
+            case "weekly":
+                handleWeeklyKey(user_id, key, list, userExp);
+                break;
+            case "monthly":
+                handleMonthlyKey(user_id, key, list, userExp);
                 break;
         }
     }
 
-    public void handleLevelKey(Long user_id, String key) {
-        List<UserAchievement> list = getUserAchievementsByUserIdAndKey(user_id, key);
-        Experience userExp = experienceService.getExperienceByUserID(user_id);
+    public void handleLevelKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
         for (int i = 0; i < list.size(); i++) {
             UserAchievement ua = list.get(i);
-            if (userExp.getLevel() >= ua.getGoal_value()) {
-                Achievement a = achievementService.getAchievement(ua.getAchievement_ID());
-                ua.setProgress_value(ua.getGoal_value());
-                ua.setStatus(2);
-                ua.setEnd_date(LocalDateTime.now().toString());
-                ua.setCount_achieved_user(getUserAchievementCountByAchievementId(ua.getAchievement_ID()));
-                UserLog log = new UserLog();
-                log.setDate_created(LocalDateTime.now().toString());
-                log.setInfo("Errungenschaft: " + a.getTitle() + " freigeschaltet!");
-                log.setStatus(1);
-                log.setUser_ID(user_id);
-                log.setType(3);
-                userLogService.setUserLog(log);
+            if (userExp.getLevel() >= ua.getGoal_value() && ua.getStatus() == 1) {
+                ua = successConditionHandler(user_id, key, userExp, ua);
             } else {
                 ua.setProgress_value(userExp.getLevel());
             }
-            updateUserAchievement(ua, ua.getId());
+            updateUserAchievement(ua, ua.getId(), true);
         }
+    }
+
+    public void handleAchievementKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
+        // get number of finished achievements to check if goal value is reached
+        int finishedAchievementCount = getFinishedUserAchievementsCountByUserId(user_id);
+
+        for (int i = 0; i < list.size(); i++) {
+            UserAchievement ua = list.get(i);
+            System.out.println(ua);
+            if (finishedAchievementCount >= ua.getGoal_value()) {
+                ua = successConditionHandler(user_id, key, userExp, ua);
+            } else {
+                System.out.println("pending");
+                ua.setProgress_value(finishedAchievementCount);
+            }
+            updateUserAchievement(ua, ua.getId(), false);
+        }
+    }
+
+    public void handleDailyKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
+        int finishedDailyCount = userQuestService.getFinishedUserQuestCountByType(user_id, 1);
+        for (int i = 0; i < list.size(); i++) {
+            UserAchievement ua = list.get(i);
+            if (finishedDailyCount >= ua.getGoal_value() && ua.getStatus() == 1) {
+                ua = successConditionHandler(user_id, key, userExp, ua);
+            } else {
+                ua.setProgress_value(finishedDailyCount);
+            }
+            updateUserAchievement(ua, ua.getId(), true);
+        }
+    }
+
+    public void handleWeeklyKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
+        int finishedDailyCount = userQuestService.getFinishedUserQuestCountByType(user_id, 2);
+        for (int i = 0; i < list.size(); i++) {
+            UserAchievement ua = list.get(i);
+            if (finishedDailyCount >= ua.getGoal_value() && ua.getStatus() == 1) {
+                ua = successConditionHandler(user_id, key, userExp, ua);
+            } else {
+                ua.setProgress_value(finishedDailyCount);
+            }
+            updateUserAchievement(ua, ua.getId(), true);
+        }
+    }
+
+    public void handleMonthlyKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
+        int finishedDailyCount = userQuestService.getFinishedUserQuestCountByType(user_id, 3);
+        for (int i = 0; i < list.size(); i++) {
+            UserAchievement ua = list.get(i);
+            if (finishedDailyCount >= ua.getGoal_value() && ua.getStatus() == 1) {
+                ua = successConditionHandler(user_id, key, userExp, ua);
+            } else {
+                ua.setProgress_value(finishedDailyCount);
+            }
+            updateUserAchievement(ua, ua.getId(), true);
+        }
+    }
+
+    // public void handleTopicKey(Long user_id, String key, List<UserAchievement>
+    // list, Experience userExp) {
+    // int readTopicContentCount =
+    // userContentService.getReadContentsByTopicAndUser(user_id);
+    // for (int i = 0; i < list.size(); i++) {
+    // UserAchievement ua = list.get(i);
+    // if (readTopicContentCount >= ua.getGoal_value() && ua.getStatus() == 1) {
+    // ua = successConditionHandler(user_id, key, userExp, ua);
+    // } else {
+    // ua.setProgress_value(readTopicContentCount);
+    // }
+    // updateUserAchievement(ua, ua.getId(), true);
+    // }
+    // }
+
+    public UserAchievement successConditionHandler(Long user_id, String key, Experience userExp, UserAchievement ua) {
+        Achievement a = achievementService.getAchievement(ua.getAchievement_ID());
+        ua.setProgress_value(ua.getGoal_value());
+        ua.setStatus(2);
+        ua.setEnd_date(LocalDateTime.now().toString());
+        ua.setCount_achieved_user(getUserAchievementCountByAchievementId(ua.getAchievement_ID()) + 1);
+        userLogService.setPartialUserLog("Errungenschaft: " + a.getTitle() + " freigeschaltet!", 3, user_id);
+        userExp.setExperience_value(userExp.getExperience_value() + a.getExperience());
+        experienceService.updateExperience(userExp, userExp.getId());
+        return ua;
     }
 
     public UserAchievement setUserAchievement(UserAchievement userAchievement) {
         return userAchievementRepository.save(userAchievement);
     }
 
-    public UserAchievement updateUserAchievement(UserAchievement userAchievementRequest, long id) {
+    public UserAchievement updateUserAchievement(UserAchievement userAchievementRequest, long id,
+            Boolean doAchievementCheck) {
         UserAchievement userAchievement = getUserAchievement(id);
         copyPropertiesOfEntity.copyNonNullProperties(userAchievementRequest, userAchievement);
+        if (doAchievementCheck) {
+            handleUserAchievementByKey(userAchievement.getUser_ID(), "achievement");
+        }
         return userAchievementRepository.save(userAchievement);
     }
 

@@ -12,6 +12,7 @@ import app.restservice.apprestservice.Repositories.UserQuestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -44,6 +45,17 @@ public class UserLogService {
 
     public UserLog setUserLog(UserLog userLog) {
         return userLogRepository.save(userLog);
+    }
+
+    public void setPartialUserLog(String info, int type, Long user_id) {
+        // User Log Entry for Frontend Toast
+        UserLog log = new UserLog();
+        log.setDate_created(LocalDateTime.now().toString());
+        log.setInfo(info);
+        log.setStatus(1);
+        log.setUser_ID(user_id);
+        log.setType(type);
+        setUserLog(log);
     }
 
     public UserLog updateUserLog(UserLog userLogRequest, long id) {

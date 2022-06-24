@@ -53,7 +53,7 @@ public class UserAchievementController {
     @PutMapping("/userachievements/update/{id}")
     public UserAchievement updateUserAchievement(@PathVariable Long id,
             @RequestBody UserAchievement userAchievementRequest) {
-        return userAchievementService.updateUserAchievement(userAchievementRequest, id);
+        return userAchievementService.updateUserAchievement(userAchievementRequest, id, true);
     }
 
     @DeleteMapping("/userachievements/delete/{id}")

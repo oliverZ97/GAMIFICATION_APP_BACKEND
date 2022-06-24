@@ -50,7 +50,6 @@ public class UserQuestController {
     @GetMapping("/userquests/setInitialUserQuestsByType/{id}/{type}")
     public void setInitialUserQuests(@PathVariable Long id, @PathVariable int type) {
         userQuestService.addNewUserQuestSet(id, type);
-
     }
 
     @PostMapping("/userquests/set")

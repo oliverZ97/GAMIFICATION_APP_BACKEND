@@ -32,6 +32,10 @@ public class AchievementService {
         return achievementRepository.findAll();
     }
 
+    public List<Achievement> getAchievementsByKey(String key) {
+        return achievementRepository.getAchievementsByKey(key);
+    }
+
     public Achievement setAchievement(Achievement achievement) {
         return achievementRepository.save(achievement);
     }

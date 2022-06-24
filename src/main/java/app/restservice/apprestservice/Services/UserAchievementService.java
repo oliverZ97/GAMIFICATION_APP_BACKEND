@@ -4,8 +4,10 @@ import org.springframework.stereotype.Service;
 
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.Achievement;
+import app.restservice.apprestservice.Entities.Experience;
 import app.restservice.apprestservice.Entities.UserAchievement;
 import app.restservice.apprestservice.Entities.UserAchievementHelper;
+import app.restservice.apprestservice.Entities.UserLog;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.UserAchievementRepository;
 
@@ -25,6 +27,12 @@ public class UserAchievementService {
     @Autowired
     private AchievementService achievementService;
 
+    @Autowired
+    private ExperienceService experienceService;
+
+    @Autowired
+    private UserLogService userLogService;
+
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
 
     public UserAchievement getUserAchievement(Long id) {
@@ -37,6 +45,14 @@ public class UserAchievementService {
 
     public List<UserAchievement> getAllUserAchievements() {
         return userAchievementRepository.findAll();
+    }
+
+    public UserAchievement getUserAchievementsByUserIdAndAchievementId(Long user_id, Long achievement_id) {
+        return userAchievementRepository.getUserAchievementsByUserIdAndAchievementId(user_id, achievement_id);
+    }
+
+    public int getUserAchievementCountByAchievementId(long achievement_id) {
+        return userAchievementRepository.getUserAchievementCountByAchievementId(achievement_id);
     }
 
     public List<UserAchievementHelper> getByUserId(Long id) {
@@ -59,6 +75,21 @@ public class UserAchievementService {
         return uahs;
     }
 
+    public List<UserAchievement> getUserAchievementsByUserIdAndKey(Long user_id, String key) {
+        List<Achievement> keyAchievements = achievementService.getAchievementsByKey(key);
+        List<UserAchievement> result = new ArrayList<UserAchievement>();
+        for (int i = 0; i < keyAchievements.size(); i++) {
+            UserAchievement ua = getUserAchievementsByUserIdAndAchievementId(user_id, keyAchievements.get(i).getId());
+            if (ua != null) {
+                result.add(ua);
+            }
+
+        }
+
+        return result;
+
+    }
+
     public void checkUserAchievements(Long id) {
         List<UserAchievement> achievements = userAchievementRepository.getUserAchievementsByUserId(id);
         if (achievements.size() == 0) {
@@ -79,6 +110,39 @@ public class UserAchievementService {
             u.setUser_ID(user_id);
             u.setStart_date(LocalDateTime.now().toString());
             setUserAchievement(u);
+        }
+    }
+
+    public void handleUserAchievementByKey(Long user_id, String key) {
+        switch (key) {
+            case "level":
+                handleLevelKey(user_id, key);
+                break;
+        }
+    }
+
+    public void handleLevelKey(Long user_id, String key) {
+        List<UserAchievement> list = getUserAchievementsByUserIdAndKey(user_id, key);
+        Experience userExp = experienceService.getExperienceByUserID(user_id);
+        for (int i = 0; i < list.size(); i++) {
+            UserAchievement ua = list.get(i);
+            if (userExp.getLevel() >= ua.getGoal_value()) {
+                Achievement a = achievementService.getAchievement(ua.getAchievement_ID());
+                ua.setProgress_value(ua.getGoal_value());
+                ua.setStatus(2);
+                ua.setEnd_date(LocalDateTime.now().toString());
+                ua.setCount_achieved_user(getUserAchievementCountByAchievementId(ua.getAchievement_ID()));
+                UserLog log = new UserLog();
+                log.setDate_created(LocalDateTime.now().toString());
+                log.setInfo("Errungenschaft: " + a.getTitle() + " freigeschaltet!");
+                log.setStatus(1);
+                log.setUser_ID(user_id);
+                log.setType(3);
+                userLogService.setUserLog(log);
+            } else {
+                ua.setProgress_value(userExp.getLevel());
+            }
+            updateUserAchievement(ua, ua.getId());
         }
     }
 

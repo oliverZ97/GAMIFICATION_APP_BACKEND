@@ -9,8 +9,6 @@ import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.ExperienceRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
@@ -27,6 +25,9 @@ public class ExperienceService {
 
     @Autowired
     private UserLogService userLogService;
+
+    @Autowired
+    private UserAchievementService userAchievementService;
 
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
 
@@ -68,6 +69,7 @@ public class ExperienceService {
             userLogService.setUserLog(entry);
         }
         experience.setLevel(level);
+        userAchievementService.handleUserAchievementByKey(experience.getUser_ID(), "level");
 
         return experienceRepository.save(experience);
     }

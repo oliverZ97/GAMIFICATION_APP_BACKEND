@@ -9,7 +9,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
+import app.restservice.apprestservice.Entities.AuthenticationResponse;
 import app.restservice.apprestservice.Entities.User;
+import app.restservice.apprestservice.Entities.UsernameAndPassword;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.UserRepository;
 
@@ -38,16 +40,11 @@ public class UserService implements UserDetailsService {
     }
 
     public User getUserByEmail(String username) {
-        Optional<User> useroptional = userRepository.getUserByUsername(username);
-        if (useroptional.isPresent()) {
-            return useroptional.get();
-        } else {
-            throw new ResourceNotFoundException("User with username not found");
-        }
+        return userRepository.getUserByUsername(username);
     }
 
     public boolean checkifUsernameIsAlreadyTaken(String username) {
-        return userRepository.getUserByUsername(username).isPresent();
+        return userRepository.getUserByUsername(username) != null;
     }
 
     public User getUser(Long id) {
@@ -60,6 +57,22 @@ public class UserService implements UserDetailsService {
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public AuthenticationResponse login(UsernameAndPassword req) {
+        User u = userRepository.getUserByUsername(req.getUsername());
+        if (u != null) {
+            if (u.getPassword().equals(req.getPassword())) {
+                int hash = u.getEmail().concat(u.getUsercode()).hashCode();
+                AuthenticationResponse res = new AuthenticationResponse(u.getEmail(), hash, u.getId());
+                return res;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+
     }
 
     public User setUser(User user) {

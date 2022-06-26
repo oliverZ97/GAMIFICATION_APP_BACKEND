@@ -10,7 +10,7 @@ import app.restservice.apprestservice.Entities.UserAchievement;
 
 @Repository
 public interface UserAchievementRepository extends JpaRepository<UserAchievement, Long> {
-    @Query(value = "SELECT * FROM user_achievement u WHERE u.user_id = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM user_achievement u WHERE u.user_id = ?1 ORDER BY status DESC", nativeQuery = true)
     List<UserAchievement> getUserAchievementsByUserId(long user_id);
 
     @Query(value = "SELECT COUNT(id) FROM user_achievement u WHERE u.user_id = ?1 AND u.status > 1", nativeQuery = true)

@@ -10,14 +10,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import app.restservice.apprestservice.Entities.AuthenticationResponse;
 import app.restservice.apprestservice.Entities.User;
 import app.restservice.apprestservice.Entities.UserAndToken;
+import app.restservice.apprestservice.Entities.UsernameAndPassword;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.JwTAuthentication.JwtTokenUtil;
 import app.restservice.apprestservice.Requests.JwtRequest;
 import app.restservice.apprestservice.Services.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import java.util.List;
 
 @RestController
@@ -46,6 +50,11 @@ public class UserController {
         } else {
             throw new ResourceNotFoundException("there is no user with that username");
         }
+    }
+
+    @PostMapping("/users/login")
+    public AuthenticationResponse login(@Valid @RequestBody UsernameAndPassword req, BindingResult result) {
+        return userService.login(req);
     }
 
     @PostMapping("/register")

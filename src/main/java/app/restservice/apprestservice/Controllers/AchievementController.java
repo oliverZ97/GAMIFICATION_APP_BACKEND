@@ -39,7 +39,7 @@ public class AchievementController {
     }
 
     @PutMapping("/achievements/update/{id}")
-    public Achievement updateTest(@PathVariable Long id, @RequestBody Achievement achievementRequest) {
+    public Achievement updateAchievement(@PathVariable Long id, @RequestBody Achievement achievementRequest) {
         return achievementService.updateAchievement(achievementRequest, id);
     }
 

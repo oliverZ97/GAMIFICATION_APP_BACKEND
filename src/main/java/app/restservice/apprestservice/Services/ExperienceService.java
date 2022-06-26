@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.Experience;
+import app.restservice.apprestservice.Entities.Streak;
 import app.restservice.apprestservice.Entities.UserLog;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.ExperienceRepository;
@@ -25,6 +26,9 @@ public class ExperienceService {
 
     @Autowired
     private UserLogService userLogService;
+
+    @Autowired
+    private StreakService streakService;
 
     @Autowired
     private UserAchievementService userAchievementService;
@@ -56,9 +60,10 @@ public class ExperienceService {
     }
 
     public Experience updateExperience(Experience experienceRequest, long id) {
-        int level = levelService.checkLevelStatus(experienceRequest.getExperience_value());
         Experience experience = getExperience(id);
         copyPropertiesOfEntity.copyNonNullProperties(experienceRequest, experience);
+        // Check if level changed
+        int level = levelService.checkLevelStatus(experienceRequest.getExperience_value());
         if (level != experienceRequest.getLevel()) {
             UserLog entry = new UserLog();
             entry.setDate_created(LocalDateTime.now().toString());
@@ -69,7 +74,28 @@ public class ExperienceService {
             userLogService.setUserLog(entry);
         }
         experience.setLevel(level);
+
+        // check if new achievement is reached
         userAchievementService.handleUserAchievementByKey(experience.getUser_ID(), "level");
+
+        // check if streak is ongoing
+        Streak userStreak = streakService.getActiveStreakByUserId(experience.getUser_ID());
+        LocalDateTime now = LocalDateTime.now();
+        if (userStreak != null) {
+            LocalDateTime last_updated = LocalDateTime.parse(userStreak.getLast_updated());
+            if (last_updated.plusHours(24).isBefore(now)) {
+                userStreak.setDay_count(userStreak.getDay_count() + 1);
+            } else {
+                userStreak.setStatus(2);
+            }
+            streakService.updateStreak(userStreak, userStreak.getId());
+        } else {
+            Streak streak = new Streak();
+            streak.setDay_count(1);
+            streak.setLast_updated(now.toString());
+            streak.setStatus(1);
+            streakService.setStreak(streak);
+        }
 
         return experienceRepository.save(experience);
     }

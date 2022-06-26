@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.Achievement;
 import app.restservice.apprestservice.Entities.Experience;
+import app.restservice.apprestservice.Entities.Streak;
 import app.restservice.apprestservice.Entities.UserAchievement;
 import app.restservice.apprestservice.Entities.UserAchievementHelper;
-import app.restservice.apprestservice.Entities.UserLog;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.UserAchievementRepository;
 
@@ -32,6 +32,9 @@ public class UserAchievementService {
 
     @Autowired
     private UserQuestService userQuestService;
+
+    @Autowired
+    private StreakService streakService;
 
     @Autowired
     private UserContentService userContentService;
@@ -142,6 +145,25 @@ public class UserAchievementService {
             case "monthly":
                 handleMonthlyKey(user_id, key, list, userExp);
                 break;
+            case "streak":
+                handleStreakKey(user_id, key, list, userExp);
+                break;
+        }
+    }
+
+    public void handleStreakKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
+        Streak streak = streakService.getActiveStreakByUserId(user_id);
+        int day_count = 0;
+        if (streak != null) {
+            day_count = streak.getDay_count();
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+            UserAchievement ua = list.get(i);
+            if (day_count >= ua.getGoal_value()) {
+                ua = successConditionHandler(user_id, key, userExp, ua);
+            }
+            updateUserAchievement(ua, ua.getId(), false);
         }
     }
 
@@ -163,11 +185,9 @@ public class UserAchievementService {
 
         for (int i = 0; i < list.size(); i++) {
             UserAchievement ua = list.get(i);
-            System.out.println(ua);
             if (finishedAchievementCount >= ua.getGoal_value()) {
                 ua = successConditionHandler(user_id, key, userExp, ua);
             } else {
-                System.out.println("pending");
                 ua.setProgress_value(finishedAchievementCount);
             }
             updateUserAchievement(ua, ua.getId(), false);

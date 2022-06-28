@@ -34,4 +34,8 @@ public class Streak {
     @Setter
     private String last_updated;
 
+    @Getter
+    @Setter
+    private Boolean changed_today;
+
 }

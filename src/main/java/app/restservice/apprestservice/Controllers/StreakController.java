@@ -27,9 +27,19 @@ public class StreakController {
         return streakService.getAllStreaks();
     }
 
+    @GetMapping("/streaks/getActiveStreakByUserId/{id}")
+    public Streak getActiveStreakByUserId(@PathVariable Long id) {
+        return streakService.getActiveStreakByUserId(id);
+    }
+
     @GetMapping("/streaks/getByUserId/{id}")
     public List<Streak> getStreaksByUserId(@PathVariable Long id) {
         return streakService.getStreaksByUserId(id);
+    }
+
+    @GetMapping("/streaks/checkStreakToday/{id}")
+    public void checkStreakToday(@PathVariable Long id) {
+        streakService.checkStreakToday(id);
     }
 
     @PostMapping("/streaks/set")

@@ -74,8 +74,15 @@ public class UserQuestService {
         return uqhs;
     }
 
-    public List<UserQuest> getActiveUserQuestsByUserIdAndType(Long user_id, int type) {
-        return userQuestRepository.getActiveUserQuestsByUserIdAndType(user_id, type);
+    public List<UserQuestHelper> getActiveUserQuestsByUserIdAndType(Long user_id, int type) {
+        List<UserQuestHelper> userQuests = getActiveUserQuestsByUserId(user_id);
+        List<UserQuestHelper> questsByType = new ArrayList<UserQuestHelper>();
+        for (int i = 0; i < userQuests.size(); i++) {
+            if (userQuests.get(i).getQuest().getType() == type) {
+                questsByType.add(userQuests.get(i));
+            }
+        }
+        return questsByType;
     }
 
     public int getFinishedUserQuestCountByType(Long user_id, int type) {
@@ -108,7 +115,7 @@ public class UserQuestService {
                 dailyLog.setStatus(3);
                 timeLogService.updateTimeLog(dailyLog, dailyLog.getId());
                 timeLogService.setTimeLog(daily.toString(), end.toString(), "", 1, 1);
-                List<UserQuest> oldQuests = getActiveUserQuestsByUserIdAndType(user_id, 1);
+                List<UserQuestHelper> oldQuests = getActiveUserQuestsByUserIdAndType(user_id, 1);
                 for (int i = 0; i < oldQuests.size(); i++) {
                     UserQuest uq = getUserQuest(oldQuests.get(i).getId());
                     if (uq.getStatus() == 1) {

@@ -10,6 +10,8 @@ import app.restservice.apprestservice.Repositories.StreakRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -45,6 +47,16 @@ public class StreakService {
 
     public List<Streak> getStreaksByUserId(Long user_id) {
         return streakRepository.getStreakByUserId(user_id);
+    }
+
+    public void checkStreakToday(Long id) {
+        Streak s = getActiveStreakByUserId(id);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        LocalDateTime last_updated = LocalDateTime.parse(s.getLast_updated(), formatter);
+        if (last_updated.getDayOfYear() < LocalDateTime.now().getDayOfYear()) {
+            s.setChanged_today(false);
+            updateStreak(s, s.getId());
+        }
     }
 
     public Streak updateStreak(Streak streakRequest, long id) {

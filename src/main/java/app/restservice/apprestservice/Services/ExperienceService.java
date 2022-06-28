@@ -85,6 +85,7 @@ public class ExperienceService {
             LocalDateTime last_updated = LocalDateTime.parse(userStreak.getLast_updated());
             if (last_updated.plusHours(24).isBefore(now)) {
                 userStreak.setDay_count(userStreak.getDay_count() + 1);
+                userStreak.setChanged_today(true);
             } else {
                 userStreak.setStatus(2);
             }
@@ -94,6 +95,8 @@ public class ExperienceService {
             streak.setDay_count(1);
             streak.setLast_updated(now.toString());
             streak.setStatus(1);
+            streak.setUser_id(experience.getUser_ID());
+            streak.setChanged_today(true);
             streakService.setStreak(streak);
         }
 

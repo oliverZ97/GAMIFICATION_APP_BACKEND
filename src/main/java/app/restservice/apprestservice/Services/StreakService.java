@@ -55,14 +55,13 @@ public class StreakService {
 
     public void checkStreakToday(Long id) {
         Streak s = getActiveStreakByUserId(id);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        LocalDateTime last_updated = LocalDateTime.parse(s.getLast_updated(), formatter);
-        System.out.println(last_updated.getDayOfYear());
-        System.out.println(LocalDateTime.now().getDayOfYear());
-        System.out.println(last_updated.getDayOfYear() < LocalDateTime.now().getDayOfYear());
-        if (last_updated.getDayOfYear() < LocalDateTime.now().getDayOfYear()) {
-            s.setChanged_today(false);
-            updateStreak(s, s.getId());
+        if (s != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+            LocalDateTime last_updated = LocalDateTime.parse(s.getLast_updated(), formatter);
+            if (last_updated.getDayOfYear() < LocalDateTime.now().getDayOfYear()) {
+                s.setChanged_today(false);
+                updateStreak(s, s.getId());
+            }
         }
     }
 
@@ -78,15 +77,17 @@ public class StreakService {
         Streak userStreak = getActiveStreakByUserId(user_id);
         LocalDateTime now = LocalDateTime.now().withNano(0);
         if (userStreak != null) {
-            LocalDateTime last_updated = LocalDateTime.parse(userStreak.getLast_updated());
-            if (last_updated.getDayOfYear() + 1 == now.getDayOfYear()) {
-                userStreak.setDay_count(userStreak.getDay_count() + 1);
-                userStreak.setChanged_today(true);
-                userStreak.setLast_updated(now.toString());
-            } else {
-                userStreak.setStatus(2);
+            if (!userStreak.getChanged_today()) {
+                LocalDateTime last_updated = LocalDateTime.parse(userStreak.getLast_updated());
+                if (last_updated.getDayOfYear() + 1 == now.getDayOfYear()) {
+                    userStreak.setDay_count(userStreak.getDay_count() + 1);
+                    userStreak.setChanged_today(true);
+                    userStreak.setLast_updated(now.toString());
+                } else {
+                    userStreak.setStatus(2);
+                }
+                updateStreak(userStreak, userStreak.getId());
             }
-            updateStreak(userStreak, userStreak.getId());
         } else {
             Streak streak = new Streak();
             streak.setDay_count(1);

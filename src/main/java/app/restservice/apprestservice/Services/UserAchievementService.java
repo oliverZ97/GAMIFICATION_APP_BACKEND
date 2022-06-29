@@ -148,6 +148,22 @@ public class UserAchievementService {
             case "streak":
                 handleStreakKey(user_id, key, list, userExp);
                 break;
+            case "content_count":
+                handleContentCountKey(user_id, key, list, userExp);
+                break;
+        }
+    }
+
+    public void handleContentCountKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
+        int userContentCount = userContentService.getUserContentCount(user_id);
+        for (int i = 0; i < list.size(); i++) {
+            UserAchievement ua = list.get(i);
+            if (userContentCount >= ua.getGoal_value()) {
+                ua = successConditionHandler(user_id, key, userExp, ua);
+            } else {
+                ua.setProgress_value(userContentCount);
+            }
+            updateUserAchievement(ua, ua.getId(), true);
         }
     }
 
@@ -163,7 +179,7 @@ public class UserAchievementService {
             if (day_count >= ua.getGoal_value()) {
                 ua = successConditionHandler(user_id, key, userExp, ua);
             }
-            updateUserAchievement(ua, ua.getId(), false);
+            updateUserAchievement(ua, ua.getId(), true);
         }
     }
 

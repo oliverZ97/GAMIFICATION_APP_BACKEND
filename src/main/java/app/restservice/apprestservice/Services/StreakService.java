@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.Streak;
+import app.restservice.apprestservice.Entities.UserLog;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.StreakRepository;
 
@@ -22,6 +23,9 @@ public class StreakService {
 
     @Autowired
     private UserAchievementService userAchievementService;
+
+    @Autowired
+    private UserLogService userLogService;
 
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
 
@@ -51,8 +55,11 @@ public class StreakService {
 
     public void checkStreakToday(Long id) {
         Streak s = getActiveStreakByUserId(id);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         LocalDateTime last_updated = LocalDateTime.parse(s.getLast_updated(), formatter);
+        System.out.println(last_updated.getDayOfYear());
+        System.out.println(LocalDateTime.now().getDayOfYear());
+        System.out.println(last_updated.getDayOfYear() < LocalDateTime.now().getDayOfYear());
         if (last_updated.getDayOfYear() < LocalDateTime.now().getDayOfYear()) {
             s.setChanged_today(false);
             updateStreak(s, s.getId());
@@ -65,6 +72,37 @@ public class StreakService {
 
         userAchievementService.handleUserAchievementByKey(streakRequest.getUser_id(), "streak");
         return streakRepository.save(streak);
+    }
+
+    public void handleStreakStatus(Long user_id) {
+        Streak userStreak = getActiveStreakByUserId(user_id);
+        LocalDateTime now = LocalDateTime.now().withNano(0);
+        if (userStreak != null) {
+            LocalDateTime last_updated = LocalDateTime.parse(userStreak.getLast_updated());
+            if (last_updated.getDayOfYear() + 1 == now.getDayOfYear()) {
+                userStreak.setDay_count(userStreak.getDay_count() + 1);
+                userStreak.setChanged_today(true);
+                userStreak.setLast_updated(now.toString());
+            } else {
+                userStreak.setStatus(2);
+            }
+            updateStreak(userStreak, userStreak.getId());
+        } else {
+            Streak streak = new Streak();
+            streak.setDay_count(1);
+            streak.setLast_updated(now.toString());
+            streak.setStatus(1);
+            streak.setUser_id(user_id);
+            streak.setChanged_today(true);
+            setStreak(streak);
+        }
+        UserLog entry = new UserLog();
+        entry.setDate_created(LocalDateTime.now().toString());
+        entry.setInfo("streak changed");
+        entry.setType(4);
+        entry.setStatus(1);
+        entry.setUser_ID(user_id);
+        userLogService.setUserLog(entry);
     }
 
     public ResponseEntity<?> deleteStreak(long id) {

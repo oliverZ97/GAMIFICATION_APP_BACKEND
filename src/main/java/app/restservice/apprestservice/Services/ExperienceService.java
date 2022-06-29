@@ -79,26 +79,7 @@ public class ExperienceService {
         userAchievementService.handleUserAchievementByKey(experience.getUser_ID(), "level");
 
         // check if streak is ongoing
-        Streak userStreak = streakService.getActiveStreakByUserId(experience.getUser_ID());
-        LocalDateTime now = LocalDateTime.now();
-        if (userStreak != null) {
-            LocalDateTime last_updated = LocalDateTime.parse(userStreak.getLast_updated());
-            if (last_updated.plusHours(24).isBefore(now)) {
-                userStreak.setDay_count(userStreak.getDay_count() + 1);
-                userStreak.setChanged_today(true);
-            } else {
-                userStreak.setStatus(2);
-            }
-            streakService.updateStreak(userStreak, userStreak.getId());
-        } else {
-            Streak streak = new Streak();
-            streak.setDay_count(1);
-            streak.setLast_updated(now.toString());
-            streak.setStatus(1);
-            streak.setUser_id(experience.getUser_ID());
-            streak.setChanged_today(true);
-            streakService.setStreak(streak);
-        }
+        streakService.handleStreakStatus(experience.getUser_ID());
 
         return experienceRepository.save(experience);
     }

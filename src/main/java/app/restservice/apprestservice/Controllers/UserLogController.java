@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import app.restservice.apprestservice.Entities.UserLog;
+import app.restservice.apprestservice.Entities.UserLogSorted;
 import app.restservice.apprestservice.Services.UserLogService;
 
 import javax.validation.Valid;
@@ -31,6 +32,11 @@ public class UserLogController {
     @GetMapping("/userlogs/getByUserId/{id}")
     public List<UserLog> getUserLogsByUserId(@PathVariable Long id) {
         return userLogService.getByUserId(id);
+    }
+
+    @GetMapping("/userlogs/getSortedLogsByUserId/{id}")
+    public UserLogSorted getSortedLogsByUserId(@PathVariable Long id) {
+        return userLogService.getSortedUserLogs(id);
     }
 
     @GetMapping("/userlogs/getByUserIdAndType/{id}/{type}")

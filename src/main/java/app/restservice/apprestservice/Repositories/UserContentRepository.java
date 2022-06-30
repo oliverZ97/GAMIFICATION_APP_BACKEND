@@ -16,6 +16,9 @@ public interface UserContentRepository extends JpaRepository<UserContent, Long> 
     @Query(value = "SELECT * FROM user_content u WHERE u.user_id = ?1 AND u.get_reward = true", nativeQuery = true)
     List<UserContent> getUserReadContents(long user_id);
 
+    @Query(value = "SELECT * FROM user_content u WHERE u.user_id = ?1", nativeQuery = true)
+    List<UserContent> getUserContentsByUserId(long user_id);
+
     @Query(value = "SELECT COUNT(id) FROM user_content u WHERE u.user_id = ?1 AND u.get_reward = true", nativeQuery = true)
     int getUserContentCount(long user_id);
 }

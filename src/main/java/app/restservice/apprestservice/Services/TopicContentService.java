@@ -40,6 +40,10 @@ public class TopicContentService {
         return topicContentRepository.getAllByContentId(id);
     }
 
+    public int getTopicCountForContentId(long id) {
+        return topicContentRepository.getTopicCountForContentId(id);
+    }
+
     public TopicContent setTopicContent(TopicContent topicContent) {
         return topicContentRepository.save(topicContent);
     }

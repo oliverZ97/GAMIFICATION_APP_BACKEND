@@ -15,4 +15,7 @@ public interface TopicContentRepository extends JpaRepository<TopicContent, Long
 
     @Query(value = "SELECT * FROM topic_content e WHERE e.content_ID = ?1", nativeQuery = true)
     List<TopicContent> getAllByContentId(long content_Id);
+
+    @Query(value = "SELECT COUNT(id) FROM topic_content e WHERE e.content_ID = ?1", nativeQuery = true)
+    int getTopicCountForContentId(long content_Id);
 }

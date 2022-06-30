@@ -137,10 +137,21 @@ public class UserQuestService {
         } else {
             LocalDateTime weekly = LocalDateTime.parse(weeklyLog.getDate_end(), formatter);
             if (now.isAfter(weekly)) {
-                LocalDateTime end = weekly.plusDays(7);
+                LocalDateTime end = weekly.plusWeeks(1);
                 weeklyLog.setStatus(3);
                 timeLogService.updateTimeLog(weeklyLog, weeklyLog.getId());
                 timeLogService.setTimeLog(weekly.toString(), end.toString(), "", 1, 2);
+                List<UserQuestHelper> oldQuests = getActiveUserQuestsByUserIdAndType(user_id, 2);
+                for (int i = 0; i < oldQuests.size(); i++) {
+                    UserQuest uq = getUserQuest(oldQuests.get(i).getId());
+                    if (uq.getStatus() == 1) {
+                        uq.setStatus(4);
+                    } else {
+                        uq.setStatus(5);
+                    }
+
+                    updateUserQuest(uq, uq.getId());
+                }
                 addNewUserQuestSet(user_id, 2);
             }
         }
@@ -156,6 +167,17 @@ public class UserQuestService {
                 monthlyLog.setStatus(3);
                 timeLogService.updateTimeLog(monthlyLog, monthlyLog.getId());
                 timeLogService.setTimeLog(monthly.toString(), end.toString(), "", 1, 3);
+                List<UserQuestHelper> oldQuests = getActiveUserQuestsByUserIdAndType(user_id, 3);
+                for (int i = 0; i < oldQuests.size(); i++) {
+                    UserQuest uq = getUserQuest(oldQuests.get(i).getId());
+                    if (uq.getStatus() == 1) {
+                        uq.setStatus(4);
+                    } else {
+                        uq.setStatus(5);
+                    }
+
+                    updateUserQuest(uq, uq.getId());
+                }
                 addNewUserQuestSet(user_id, 3);
             }
         }

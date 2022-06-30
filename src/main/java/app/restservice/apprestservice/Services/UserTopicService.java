@@ -18,6 +18,9 @@ public class UserTopicService {
     @Autowired
     private UserTopicRepository userTopicRepository;
 
+    @Autowired
+    private UserAchievementService userAchievementService;
+
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
 
     public UserTopic getUserTopic(Long id) {
@@ -41,13 +44,17 @@ public class UserTopicService {
     }
 
     public UserTopic setUserTopic(UserTopic userTopic) {
-        return userTopicRepository.save(userTopic);
+        UserTopic u = userTopicRepository.save(userTopic);
+        userAchievementService.handleUserAchievementByKey(userTopic.getUser_ID(), "topic_favourite");
+        return u;
     }
 
     public UserTopic updateUserTopic(UserTopic userTopicRequest, long id) {
         UserTopic userTopic = getUserTopic(id);
         copyPropertiesOfEntity.copyNonNullProperties(userTopicRequest, userTopic);
-        return userTopicRepository.save(userTopic);
+        UserTopic updated = userTopicRepository.save(userTopic);
+        userAchievementService.handleUserAchievementByKey(userTopic.getUser_ID(), "topic_favourite");
+        return updated;
     }
 
     public ResponseEntity<?> deleteUserTopic(long id) {

@@ -40,6 +40,12 @@ public class UserAchievementService {
     private UserContentService userContentService;
 
     @Autowired
+    private TopicContentService topicContentService;
+
+    @Autowired
+    private UserTopicService userTopicService;
+
+    @Autowired
     private UserLogService userLogService;
 
     private CopyPropertiesOfEntity copyPropertiesOfEntity;
@@ -151,20 +157,49 @@ public class UserAchievementService {
             case "content_count":
                 handleContentCountKey(user_id, key, list, userExp);
                 break;
+            case "wordcount":
+                handleWordCountKey(user_id, key, list, userExp);
+                break;
+            case "topic_favourite":
+                handleTopicFavouriteKey(user_id, key, list, userExp);
+                break;
         }
+    }
+
+    public void handleAchivementCondition(Long user_id, String key, List<UserAchievement> list, Experience userExp,
+            int condition) {
+        for (int i = 0; i < list.size(); i++) {
+            UserAchievement ua = list.get(i);
+            if (condition >= ua.getGoal_value()) {
+                ua = successConditionHandler(user_id, key, userExp, ua);
+            } else {
+                ua.setProgress_value(condition);
+            }
+            updateUserAchievement(ua, ua.getId(), true);
+        }
+    }
+
+    public void handleTopicFavouriteKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
+        int topicFavouriteCount = userTopicService.getUserFavouriteTopicsByUserID(user_id).size();
+        handleAchivementCondition(user_id, key, list, userExp, topicFavouriteCount);
+    }
+
+    public void handleWordCountKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
+        int wordCount = userContentService.getUserContentWordCount(user_id, 1000);
+        handleAchivementCondition(user_id, key, list, userExp, wordCount);
+    }
+
+    // Needs additional Data and can't be executed over the switch case
+    public void handleTopicCountKey(Long user_id, String key, Long content_id) {
+        List<UserAchievement> list = getUserAchievementsByUserIdAndKey(user_id, key);
+        Experience userExp = experienceService.getExperienceByUserID(user_id);
+        int topicCount = topicContentService.getTopicCountForContentId(content_id);
+        handleAchivementCondition(user_id, key, list, userExp, topicCount);
     }
 
     public void handleContentCountKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
         int userContentCount = userContentService.getUserContentCount(user_id);
-        for (int i = 0; i < list.size(); i++) {
-            UserAchievement ua = list.get(i);
-            if (userContentCount >= ua.getGoal_value()) {
-                ua = successConditionHandler(user_id, key, userExp, ua);
-            } else {
-                ua.setProgress_value(userContentCount);
-            }
-            updateUserAchievement(ua, ua.getId(), true);
-        }
+        handleAchivementCondition(user_id, key, list, userExp, userContentCount);
     }
 
     public void handleStreakKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
@@ -184,21 +219,12 @@ public class UserAchievementService {
     }
 
     public void handleLevelKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
-        for (int i = 0; i < list.size(); i++) {
-            UserAchievement ua = list.get(i);
-            if (userExp.getLevel() >= ua.getGoal_value() && ua.getStatus() == 1) {
-                ua = successConditionHandler(user_id, key, userExp, ua);
-            } else {
-                ua.setProgress_value(userExp.getLevel());
-            }
-            updateUserAchievement(ua, ua.getId(), true);
-        }
+        handleAchivementCondition(user_id, key, list, userExp, userExp.getLevel());
     }
 
     public void handleAchievementKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
         // get number of finished achievements to check if goal value is reached
         int finishedAchievementCount = getFinishedUserAchievementsCountByUserId(user_id);
-
         for (int i = 0; i < list.size(); i++) {
             UserAchievement ua = list.get(i);
             if (finishedAchievementCount >= ua.getGoal_value()) {
@@ -212,41 +238,17 @@ public class UserAchievementService {
 
     public void handleDailyKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
         int finishedDailyCount = userQuestService.getFinishedUserQuestCountByType(user_id, 1);
-        for (int i = 0; i < list.size(); i++) {
-            UserAchievement ua = list.get(i);
-            if (finishedDailyCount >= ua.getGoal_value() && ua.getStatus() == 1) {
-                ua = successConditionHandler(user_id, key, userExp, ua);
-            } else {
-                ua.setProgress_value(finishedDailyCount);
-            }
-            updateUserAchievement(ua, ua.getId(), true);
-        }
+        handleAchivementCondition(user_id, key, list, userExp, finishedDailyCount);
     }
 
     public void handleWeeklyKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
-        int finishedDailyCount = userQuestService.getFinishedUserQuestCountByType(user_id, 2);
-        for (int i = 0; i < list.size(); i++) {
-            UserAchievement ua = list.get(i);
-            if (finishedDailyCount >= ua.getGoal_value() && ua.getStatus() == 1) {
-                ua = successConditionHandler(user_id, key, userExp, ua);
-            } else {
-                ua.setProgress_value(finishedDailyCount);
-            }
-            updateUserAchievement(ua, ua.getId(), true);
-        }
+        int finishedWeeklyCount = userQuestService.getFinishedUserQuestCountByType(user_id, 2);
+        handleAchivementCondition(user_id, key, list, userExp, finishedWeeklyCount);
     }
 
     public void handleMonthlyKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
-        int finishedDailyCount = userQuestService.getFinishedUserQuestCountByType(user_id, 3);
-        for (int i = 0; i < list.size(); i++) {
-            UserAchievement ua = list.get(i);
-            if (finishedDailyCount >= ua.getGoal_value() && ua.getStatus() == 1) {
-                ua = successConditionHandler(user_id, key, userExp, ua);
-            } else {
-                ua.setProgress_value(finishedDailyCount);
-            }
-            updateUserAchievement(ua, ua.getId(), true);
-        }
+        int finishedMonthlyCount = userQuestService.getFinishedUserQuestCountByType(user_id, 3);
+        handleAchivementCondition(user_id, key, list, userExp, finishedMonthlyCount);
     }
 
     // public void handleTopicKey(Long user_id, String key, List<UserAchievement>

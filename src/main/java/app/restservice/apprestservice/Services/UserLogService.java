@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.UserLog;
+import app.restservice.apprestservice.Entities.UserLogSorted;
 import app.restservice.apprestservice.Entities.UserQuest;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.UserLogRepository;
@@ -56,6 +57,15 @@ public class UserLogService {
         log.setUser_ID(user_id);
         log.setType(type);
         setUserLog(log);
+    }
+
+    public UserLogSorted getSortedUserLogs(Long user_id) {
+        UserLogSorted logs = new UserLogSorted();
+        logs.setLevelLogs(userLogRepository.getUserLogsByUserIdAndType(user_id, 1));
+        logs.setQuestLogs(userLogRepository.getUserLogsByUserIdAndType(user_id, 2));
+        logs.setAchievementLogs(userLogRepository.getUserLogsByUserIdAndType(user_id, 3));
+        logs.setStreakLogs(userLogRepository.getUserLogsByUserIdAndType(user_id, 4));
+        return logs;
     }
 
     public UserLog updateUserLog(UserLog userLogRequest, long id) {

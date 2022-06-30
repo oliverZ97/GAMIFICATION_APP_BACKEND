@@ -46,7 +46,21 @@ public class StreakService {
     }
 
     public Streak getActiveStreakByUserId(Long user_id) {
-        return streakRepository.getActiveStreakByUserId(user_id);
+        Streak s = streakRepository.getActiveStreakByUserId(user_id);
+        if (s != null) {
+            return s;
+        } else {
+            LocalDateTime now = LocalDateTime.now().withNano(0);
+            Streak streak = new Streak();
+            streak.setDay_count(0);
+            streak.setLast_updated(now.toString());
+            streak.setStatus(1);
+            streak.setUser_id(user_id);
+            streak.setChanged_today(false);
+            setStreak(streak);
+            return streak;
+        }
+
     }
 
     public List<Streak> getStreaksByUserId(Long user_id) {
@@ -79,7 +93,8 @@ public class StreakService {
         if (userStreak != null) {
             if (!userStreak.getChanged_today()) {
                 LocalDateTime last_updated = LocalDateTime.parse(userStreak.getLast_updated());
-                if (last_updated.getDayOfYear() + 1 == now.getDayOfYear()) {
+                if (last_updated.getDayOfYear() + 1 == now.getDayOfYear()
+                        || (last_updated.getDayOfYear() == now.getDayOfYear() && userStreak.getDay_count() == 0)) {
                     userStreak.setDay_count(userStreak.getDay_count() + 1);
                     userStreak.setChanged_today(true);
                     userStreak.setLast_updated(now.toString());

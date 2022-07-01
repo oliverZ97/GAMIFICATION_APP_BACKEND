@@ -7,6 +7,7 @@ import app.restservice.apprestservice.Entities.Content;
 import app.restservice.apprestservice.Entities.DashboardEntry;
 import app.restservice.apprestservice.Entities.Topic;
 import app.restservice.apprestservice.Entities.UserCategory;
+import app.restservice.apprestservice.Entities.UserContent;
 import app.restservice.apprestservice.Entities.UserTopic;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.CategoryRepository;
@@ -36,6 +37,9 @@ public class ContentService {
 
     @Autowired
     private UserTopicRepository userTopicRepository;
+
+    @Autowired
+    private UserContentService userContentService;
 
     @Autowired
     private UserCategoryRepository userCategoryRepository;
@@ -103,6 +107,18 @@ public class ContentService {
 
         }
         return result;
+    }
+
+    public DashboardEntry getDashboardFavouriteContent(Long user_id) {
+        List<UserContent> favourites = userContentService.getUserContentFavouritesByUserId(user_id);
+        List<Content> result = new ArrayList<>();
+        for (int i = 0; i < favourites.size(); i++) {
+            Content c = getContent(favourites.get(i).getContent_ID());
+            result.add(c);
+        }
+        DashboardEntry entry = new DashboardEntry("Favoriten", result);
+
+        return entry;
     }
 
     public List<Content> getRandomContentByTopicId(Long topic_id) {

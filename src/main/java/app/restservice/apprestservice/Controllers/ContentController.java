@@ -57,6 +57,11 @@ public class ContentController {
         return contentService.getDashboardCategoryContent(id);
     }
 
+    @GetMapping("/contents/getdashboardfavouritecontent/{id}")
+    public DashboardEntry getDashboardFavouriteContent(@PathVariable Long id) {
+        return contentService.getDashboardFavouriteContent(id);
+    }
+
     @GetMapping("/contents/getbycategoryid/{id}")
     public List<Content> getContentByCategoryId(@PathVariable Long id) {
         return contentService.getContentByCategoryId(id);

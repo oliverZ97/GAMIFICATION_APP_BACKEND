@@ -2,6 +2,7 @@ package app.restservice.apprestservice.Services;
 
 import java.util.List;
 
+import org.hibernate.loader.plan.spi.Return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.Content;
 import app.restservice.apprestservice.Entities.UserContent;
+import app.restservice.apprestservice.Entities.UserContentFavourite;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.UserContentRepository;
 
@@ -67,18 +69,61 @@ public class UserContentService {
         return userContentRepository.getUserContentsByUserId(user_id);
     }
 
+    public List<UserContent> getUserContentFavouritesByUserId(Long user_id) {
+        return userContentRepository.getUserContentFavouritesByUserId(user_id);
+    }
+
     public UserContent setUserContent(UserContent userContent) {
-        UserContent obj = userContentRepository.save(userContent);
-        userAchievementService.handleUserAchievementByKey(userContent.getUser_ID(), "content_count");
-        userAchievementService.handleUserAchievementByKey(userContent.getUser_ID(), "wordcount");
-        userAchievementService.handleTopicCountKey(userContent.getUser_ID(), "topic_count", obj.getContent_ID());
+        UserContent uc = getUserContentByContentId(userContent.getUser_ID(),
+                userContent.getContent_ID());
+        UserContent obj = null;
+        if (uc == null) {
+            obj = userContentRepository.save(userContent);
+            userAchievementService.handleUserAchievementByKey(userContent.getUser_ID(), "content_count");
+            userAchievementService.handleUserAchievementByKey(userContent.getUser_ID(), "wordcount");
+            userAchievementService.handleTopicCountKey(userContent.getUser_ID(), "topic_count", obj.getContent_ID());
+        } else {
+            obj = uc;
+        }
+
         return obj;
+    }
+
+    public UserContentFavourite getUserContentFavouriteByContentId(Long user_id, Long content_id) {
+        UserContent u = userContentRepository.getUserContentByContentId(user_id, content_id);
+        UserContentFavourite f = new UserContentFavourite();
+
+        if (u != null) {
+            f.setContent_ID(u.getContent_ID());
+            f.setFavourite(u.getFavourite());
+            f.setUser_ID(u.getUser_ID());
+            f.setUser_content_ID(u.getId());
+
+        } else {
+            f.setContent_ID(content_id);
+            f.setFavourite(0);
+            f.setUser_ID(user_id);
+        }
+
+        return f;
+    }
+
+    public UserContent getUserContentByContentId(Long user_id, Long content_id) {
+        return userContentRepository.getUserContentByContentId(user_id, content_id);
     }
 
     public UserContent updateUserContent(UserContent userContentRequest, long id) {
         UserContent userContent = getUserContent(id);
-        copyPropertiesOfEntity.copyNonNullProperties(userContentRequest, userContent);
+        copyPropertiesOfEntity.copyNonNullProperties(userContentRequest,
+                userContent);
         return userContentRepository.save(userContent);
+    }
+
+    public UserContent updateUserContentFavourite(long id, int favourite) {
+        UserContent userContent = getUserContent(id);
+        userContent.setFavourite(favourite);
+        UserContent result = userContentRepository.save(userContent);
+        return result;
     }
 
     public ResponseEntity<?> deleteUserContent(long id) {

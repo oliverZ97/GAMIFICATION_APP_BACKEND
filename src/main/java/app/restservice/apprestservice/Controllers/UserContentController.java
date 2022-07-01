@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import app.restservice.apprestservice.Entities.UserContent;
+import app.restservice.apprestservice.Entities.UserContentFavourite;
 import app.restservice.apprestservice.Services.UserContentService;
 
 import javax.validation.Valid;
@@ -24,6 +25,11 @@ public class UserContentController {
     @GetMapping("/usercontents/get/{id}")
     public UserContent getUserContent(@PathVariable Long id) {
         return userContentService.getUserContent(id);
+    }
+
+    @GetMapping("/usercontents/getUserContentByContentId/{user_id}/{content_id}")
+    public UserContentFavourite getUserContentByContentId(@PathVariable Long user_id, @PathVariable Long content_id) {
+        return userContentService.getUserContentFavouriteByContentId(user_id, content_id);
     }
 
     @GetMapping("/usercontents/checkRewardStatus/{content_id}/{user_id}")
@@ -54,6 +60,18 @@ public class UserContentController {
     public ResponseEntity<Object> updateUserContent(@PathVariable Long id,
             @RequestBody UserContent userContentRequest) {
         UserContent resultObj = userContentService.updateUserContent(userContentRequest, id);
+        System.out.println(resultObj);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("message", "OK");
+        map.put("status", HttpStatus.OK);
+        map.put("data", resultObj);
+        return new ResponseEntity<Object>(map, HttpStatus.OK);
+    }
+
+    @PutMapping("/usercontents/updateFavourite/{id}/{favourite}")
+    public ResponseEntity<Object> updateUserContentFavourite(@PathVariable Long id,
+            @PathVariable int favourite) {
+        UserContent resultObj = userContentService.updateUserContentFavourite(id, favourite);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("message", "OK");
         map.put("status", HttpStatus.OK);

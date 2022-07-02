@@ -168,8 +168,8 @@ public class QuestService {
         return questRepository.save(quest);
     }
 
-    public List<Quest> getRandomQuestSet(int type) {
-        List<Quest> quests = questRepository.getAllByType(type);
+    public List<Quest> getRandomQuestSet(int type, int level) {
+        List<Quest> quests = questRepository.getAllByTypeAndMaxLevel(type, level);
         return pickNRandom(quests, 4);
     }
 

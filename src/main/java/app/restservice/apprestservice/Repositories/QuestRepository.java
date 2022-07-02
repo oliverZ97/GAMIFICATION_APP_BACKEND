@@ -12,4 +12,7 @@ import app.restservice.apprestservice.Entities.Quest;
 public interface QuestRepository extends JpaRepository<Quest, Long> {
     @Query(value = "SELECT * FROM quest e WHERE e.type = ?1", nativeQuery = true)
     List<Quest> getAllByType(int type);
+
+    @Query(value = "SELECT * FROM quest e WHERE e.type = ?1 AND e.min_level <= ?2", nativeQuery = true)
+    List<Quest> getAllByTypeAndMaxLevel(int type, int level);
 }

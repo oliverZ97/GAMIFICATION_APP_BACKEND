@@ -36,6 +36,9 @@ public class UserQuestService {
     private TimeLogService timeLogService;
 
     @Autowired
+    private ExperienceService experienceService;
+
+    @Autowired
     private TopicService topicService;
 
     @Autowired
@@ -211,7 +214,8 @@ public class UserQuestService {
     }
 
     public void addNewUserQuestSet(long user_id, int type) {
-        List<Quest> quests = questService.getRandomQuestSet(type);
+        int max_level = experienceService.getExperienceByUserID(user_id).getLevel();
+        List<Quest> quests = questService.getRandomQuestSet(type, max_level);
         TimeLog log = timeLogService.getTimeLogByType(type);
         for (int i = 0; i < quests.size(); i++) {
             UserQuest uq = new UserQuest();

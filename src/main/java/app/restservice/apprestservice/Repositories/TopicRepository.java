@@ -12,4 +12,7 @@ import app.restservice.apprestservice.Entities.Topic;
 public interface TopicRepository extends JpaRepository<Topic, Long> {
     @Query(value = "SELECT * FROM topic e WHERE e.category_id = ?1", nativeQuery = true)
     List<Topic> getTopicsByCategoryId(long category_id);
+
+    @Query(value = "SELECT * FROM topic e WHERE e.min_level <= ?1", nativeQuery = true)
+    List<Topic> getTopicsByMinLevel(int minLevel);
 }

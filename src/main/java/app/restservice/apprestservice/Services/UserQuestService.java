@@ -100,6 +100,12 @@ public class UserQuestService {
     }
 
     public void checkIfQuestsAreExpired(Long user_id) {
+        List<UserQuestHelper> quests = getActiveUserQuestsByUserId(user_id);
+        if (quests.size() == 0) {
+            addNewUserQuestSet(user_id, 1);
+            addNewUserQuestSet(user_id, 2);
+            addNewUserQuestSet(user_id, 3);
+        }
         LocalDateTime now = LocalDateTime.now();
         TimeLog dailyLog = timeLogService.getTimeLogByType(1);
         TimeLog weeklyLog = timeLogService.getTimeLogByType(2);

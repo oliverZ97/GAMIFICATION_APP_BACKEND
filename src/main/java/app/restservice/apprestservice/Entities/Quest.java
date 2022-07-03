@@ -47,10 +47,10 @@ public class Quest {
     @Setter
     private String key;
 
-    // Value des entsprechenden Keys z.B. Politik
+    // min_level um diese Quest zu erhalten
     @Getter
     @Setter
-    private int value;
+    private int min_level;
 
     // Anzahl der entsprechenden zu lesenden contents. z.B. 10 Contents zum topic
     // Politik

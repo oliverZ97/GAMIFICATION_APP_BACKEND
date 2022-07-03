@@ -14,5 +14,5 @@ public interface QuestRepository extends JpaRepository<Quest, Long> {
     List<Quest> getAllByType(int type);
 
     @Query(value = "SELECT * FROM quest e WHERE e.type = ?1 AND e.min_level <= ?2", nativeQuery = true)
-    List<Quest> getAllByTypeAndMaxLevel(int type, int level);
+    List<Quest> getAllByTypeAndLevel(int type, int level);
 }

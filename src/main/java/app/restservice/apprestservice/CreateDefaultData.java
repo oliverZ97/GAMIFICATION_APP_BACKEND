@@ -32,25 +32,25 @@ public class CreateDefaultData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // questService.createRandomTopicQuest(1);
-        // questService.createRandomTopicQuest(1);
-        // questService.createRandomCategoryQuest(1);
-        // questService.createRandomCategoryQuest(1);
-        // questService.createRandomWordCountQuest(1);
-        // questService.createRandomWordCountQuest(1);
-        // questService.createRandomTopicQuest(2);
-        // questService.createRandomTopicQuest(2);
-        // questService.createRandomCategoryQuest(2);
-        // questService.createRandomCategoryQuest(2);
-        // questService.createRandomWordCountQuest(2);
-        // questService.createRandomWordCountQuest(2);
-        // questService.createRandomCategoryQuest(3);
-        // questService.createRandomCategoryQuest(3);
-        // questService.createRandomTopicQuest(3);
-        // questService.createRandomTopicQuest(3);
-        // questService.createRandomWordCountQuest(3);
-        // questService.createRandomWordCountQuest(3);
-        // System.out.println("Quests erzeugt");
+        questService.createRandomTopicQuest(1);
+        questService.createRandomTopicQuest(1);
+        questService.createRandomCategoryQuest(1);
+        questService.createRandomCategoryQuest(1);
+        questService.createRandomWordCountQuest(1);
+        questService.createRandomWordCountQuest(1);
+        questService.createRandomTopicQuest(2);
+        questService.createRandomTopicQuest(2);
+        questService.createRandomCategoryQuest(2);
+        questService.createRandomCategoryQuest(2);
+        questService.createRandomWordCountQuest(2);
+        questService.createRandomWordCountQuest(2);
+        questService.createRandomCategoryQuest(3);
+        questService.createRandomCategoryQuest(3);
+        questService.createRandomTopicQuest(3);
+        questService.createRandomTopicQuest(3);
+        questService.createRandomWordCountQuest(3);
+        questService.createRandomWordCountQuest(3);
+        System.out.println("Quests erzeugt");
 
     }
 }

@@ -94,7 +94,7 @@ public class QuestService {
         quest.setKey_count(keyCount);
         quest.setTitle(title);
         quest.setType(type);
-        quest.setValue(0);
+        quest.setMin_level(Integer.parseInt(topic.getMinLevel()));
         return questRepository.save(quest);
     }
 
@@ -128,7 +128,7 @@ public class QuestService {
         quest.setKey_count(keyCount);
         quest.setTitle(title);
         quest.setType(type);
-        quest.setValue(0);
+        quest.setMin_level(Integer.parseInt(category.getMinLevel()));
         return questRepository.save(quest);
     }
 
@@ -164,12 +164,12 @@ public class QuestService {
         quest.setKey_count(keyCount);
         quest.setTitle(title);
         quest.setType(type);
-        quest.setValue(0);
+        quest.setMin_level(1);
         return questRepository.save(quest);
     }
 
     public List<Quest> getRandomQuestSet(int type, int level) {
-        List<Quest> quests = questRepository.getAllByTypeAndMaxLevel(type, level);
+        List<Quest> quests = questRepository.getAllByTypeAndLevel(type, level);
         return pickNRandom(quests, 4);
     }
 

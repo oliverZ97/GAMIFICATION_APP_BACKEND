@@ -32,6 +32,10 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
+    public List<Category> getCategoriesByMinLevel(int minLevel) {
+        return categoryRepository.getCategoriesByMinLevel(minLevel);
+    }
+
     public Category setCategory(Category category) {
         return categoryRepository.save(category);
     }

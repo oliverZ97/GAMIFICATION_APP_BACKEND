@@ -38,6 +38,10 @@ public class TopicService {
         return topicRepository.findAll();
     }
 
+    public List<Topic> getTopicsByMinLevel(int minLevel) {
+        return topicRepository.getTopicsByMinLevel(minLevel);
+    }
+
     public List<Topic> getTopicsByCategoryID(Long id) {
         if (categoryRepository.findById(id).isPresent()) {
             return topicRepository.getTopicsByCategoryId(id);

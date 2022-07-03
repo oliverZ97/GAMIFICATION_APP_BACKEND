@@ -40,6 +40,7 @@ public class UserService implements UserDetailsService {
     public User getUserByEmail(String username) {
         Optional<User> useroptional = userRepository.getUserByUsername(username);
         if (useroptional.isPresent()) {
+            System.out.println("present");
             return useroptional.get();
         } else {
             throw new ResourceNotFoundException("User with username not found");

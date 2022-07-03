@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import app.restservice.apprestservice.Entities.User;
 import app.restservice.apprestservice.Entities.UserAndToken;
+import app.restservice.apprestservice.Entities.UserLogin;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.JwTAuthentication.JwtTokenUtil;
 import app.restservice.apprestservice.Requests.JwtRequest;
@@ -74,6 +75,12 @@ public class UserController {
     @GetMapping("/users/get/{id}")
     public User getUser(@PathVariable Long id) {
         return userService.getUser(id);
+    }
+
+    @PostMapping("/users/getUserByUsername")
+    public User getUserByUsername(@RequestBody UserLogin userRequest) {
+        System.out.println(userRequest.getUsername());
+        return userService.getUserByEmail(userRequest.getUsername());
     }
 
     @GetMapping("/users/getAll")

@@ -105,7 +105,7 @@ public class StreakService {
             }
         } else {
             Streak streak = new Streak();
-            streak.setDay_count(1);
+            streak.setDay_count(0);
             streak.setLast_updated(now.toString());
             streak.setStatus(1);
             streak.setUser_id(user_id);

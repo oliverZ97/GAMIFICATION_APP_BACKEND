@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
@@ -25,7 +26,7 @@ public class Category {
 
     @Getter
     @Setter
-    @NotEmpty
+    @NotNull
     private String minLevel;
 
 }

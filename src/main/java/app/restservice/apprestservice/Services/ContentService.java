@@ -33,6 +33,9 @@ public class ContentService {
     private TopicRepository topicRepository;
 
     @Autowired
+    private TopicService topicService;
+
+    @Autowired
     private CategoryRepository categoryRepository;
 
     @Autowired
@@ -88,7 +91,7 @@ public class ContentService {
         for (int i = 0; i < favourites.size(); i++) {
             Long category_id = favourites.get(i).getCategory_ID();
             String category_name = categoryRepository.getById(category_id).getName();
-            List<Topic> topics = topicRepository.getTopicsByCategoryId(category_id);
+            List<Topic> topics = topicService.getTopicsByCategoryID(category_id);
             int rdm1 = (int) (Math.random() * topics.size());
             int rdm2 = (int) (Math.random() * topics.size());
             if (topics.size() > 0) {
@@ -130,7 +133,7 @@ public class ContentService {
     }
 
     public List<Content> getContentByCategoryId(Long id) {
-        List<Topic> topics = topicRepository.getTopicsByCategoryId(id);
+        List<Topic> topics = topicService.getTopicsByCategoryID(id);
         List<Content> result = new ArrayList<Content>();
         for (int i = 0; i < topics.size(); i++) {
             List<Content> contents = contentRepository.getContentByTopicId(topics.get(i).getId());

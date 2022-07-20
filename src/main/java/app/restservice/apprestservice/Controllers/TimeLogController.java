@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import app.restservice.apprestservice.Entities.TimeLog;
 import app.restservice.apprestservice.Services.TimeLogService;
-import app.restservice.apprestservice.Services.UserLogService;
 
 import javax.validation.Valid;
 import java.util.List;

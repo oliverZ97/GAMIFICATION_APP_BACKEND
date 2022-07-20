@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.Experience;
-import app.restservice.apprestservice.Entities.Streak;
 import app.restservice.apprestservice.Entities.UserLog;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.ExperienceRepository;
@@ -72,11 +71,12 @@ public class ExperienceService {
             entry.setStatus(1);
             entry.setUser_ID(experience.getUser_ID());
             userLogService.setUserLog(entry);
-        }
-        experience.setLevel(level);
 
-        // check if new achievement is reached
-        userAchievementService.handleUserAchievementByKey(experience.getUser_ID(), "level");
+            experience.setLevel(level);
+
+            // check if new achievement is reached
+            userAchievementService.handleUserAchievementByKey(experience.getUser_ID(), "level");
+        }
 
         // check if streak is ongoing
         streakService.handleStreakStatus(experience.getUser_ID());

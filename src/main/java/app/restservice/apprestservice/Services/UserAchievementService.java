@@ -166,7 +166,7 @@ public class UserAchievementService {
         }
     }
 
-    public void handleAchivementCondition(Long user_id, String key, List<UserAchievement> list, Experience userExp,
+    public void handleAchievementCondition(Long user_id, String key, List<UserAchievement> list, Experience userExp,
             int condition) {
         for (int i = 0; i < list.size(); i++) {
             UserAchievement ua = list.get(i);
@@ -181,12 +181,12 @@ public class UserAchievementService {
 
     public void handleTopicFavouriteKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
         int topicFavouriteCount = userTopicService.getUserFavouriteTopicsByUserID(user_id).size();
-        handleAchivementCondition(user_id, key, list, userExp, topicFavouriteCount);
+        handleAchievementCondition(user_id, key, list, userExp, topicFavouriteCount);
     }
 
     public void handleWordCountKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
         int wordCount = userContentService.getUserContentWordCount(user_id, 1000);
-        handleAchivementCondition(user_id, key, list, userExp, wordCount);
+        handleAchievementCondition(user_id, key, list, userExp, wordCount);
     }
 
     // Needs additional Data and can't be executed over the switch case
@@ -194,12 +194,12 @@ public class UserAchievementService {
         List<UserAchievement> list = getUserAchievementsByUserIdAndKey(user_id, key);
         Experience userExp = experienceService.getExperienceByUserID(user_id);
         int topicCount = topicContentService.getTopicCountForContentId(content_id);
-        handleAchivementCondition(user_id, key, list, userExp, topicCount);
+        handleAchievementCondition(user_id, key, list, userExp, topicCount);
     }
 
     public void handleContentCountKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
         int userContentCount = userContentService.getUserContentCount(user_id);
-        handleAchivementCondition(user_id, key, list, userExp, userContentCount);
+        handleAchievementCondition(user_id, key, list, userExp, userContentCount);
     }
 
     public void handleStreakKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
@@ -219,7 +219,7 @@ public class UserAchievementService {
     }
 
     public void handleLevelKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
-        handleAchivementCondition(user_id, key, list, userExp, userExp.getLevel());
+        handleAchievementCondition(user_id, key, list, userExp, userExp.getLevel());
     }
 
     public void handleAchievementKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
@@ -238,17 +238,17 @@ public class UserAchievementService {
 
     public void handleDailyKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
         int finishedDailyCount = userQuestService.getFinishedUserQuestCountByType(user_id, 1);
-        handleAchivementCondition(user_id, key, list, userExp, finishedDailyCount);
+        handleAchievementCondition(user_id, key, list, userExp, finishedDailyCount);
     }
 
     public void handleWeeklyKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
         int finishedWeeklyCount = userQuestService.getFinishedUserQuestCountByType(user_id, 2);
-        handleAchivementCondition(user_id, key, list, userExp, finishedWeeklyCount);
+        handleAchievementCondition(user_id, key, list, userExp, finishedWeeklyCount);
     }
 
     public void handleMonthlyKey(Long user_id, String key, List<UserAchievement> list, Experience userExp) {
         int finishedMonthlyCount = userQuestService.getFinishedUserQuestCountByType(user_id, 3);
-        handleAchivementCondition(user_id, key, list, userExp, finishedMonthlyCount);
+        handleAchievementCondition(user_id, key, list, userExp, finishedMonthlyCount);
     }
 
     // public void handleTopicKey(Long user_id, String key, List<UserAchievement>

@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
@@ -35,7 +36,7 @@ public class Quest {
     @Setter
     @Min(1)
     @Max(4)
-    @NotEmpty
+    @NotNull
     private int type;
 
     @Getter

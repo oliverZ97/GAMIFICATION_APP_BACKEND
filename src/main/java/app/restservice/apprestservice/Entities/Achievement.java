@@ -3,7 +3,9 @@ package app.restservice.apprestservice.Entities;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
@@ -20,16 +22,17 @@ public class Achievement {
 
     @Getter
     @Setter
-    @NotEmpty
+    @NotNull
     private String title;
 
     @Getter
     @Setter
-    @NotEmpty
+    @NotNull
     private String key;
 
     @Getter
     @Setter
+    @NotNull
     private int key_count;
 
     @Getter
@@ -38,14 +41,18 @@ public class Achievement {
 
     @Getter
     @Setter
+    @NonNull
     private String description;
 
     @Getter
     @Setter
+    @NotNull
     private int experience;
 
     @Getter
     @Setter
+    @Min(1)
+    @Max(4)
     private int rarity;
 
 }

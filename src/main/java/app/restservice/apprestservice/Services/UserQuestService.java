@@ -120,9 +120,10 @@ public class UserQuestService {
         } else {
             LocalDateTime daily = LocalDateTime.parse(dailyLog.getDate_end(), formatter);
             if (now.isAfter(daily)) {
-                LocalDateTime end = daily.plusHours(24);
+                LocalDateTime end = timeLogService.todayAt(4, 0).plusHours(24);
+                dailyLog.setStatus(3);
                 timeLogService.updateTimeLog(dailyLog, dailyLog.getId());
-                timeLogService.setTimeLog(daily.toString(), end.toString(), "", 1, 1);
+                timeLogService.setTimeLog(timeLogService.todayAt(4, 0).toString(), end.toString(), "", 1, 1);
                 List<UserQuestHelper> oldQuests = getActiveUserQuestsByUserIdAndType(user_id, 1);
                 for (int i = 0; i < oldQuests.size(); i++) {
                     UserQuest uq = getUserQuest(oldQuests.get(i).getId());
@@ -137,6 +138,7 @@ public class UserQuestService {
                 addNewUserQuestSet(user_id, 1);
             }
         }
+        System.out.println(weeklyLog);
         if (weeklyLog == null) {
             LocalDateTime start = timeLogService.todayAt(4, 0).with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
             LocalDateTime end = start.plusDays(7);
@@ -145,9 +147,10 @@ public class UserQuestService {
         } else {
             LocalDateTime weekly = LocalDateTime.parse(weeklyLog.getDate_end(), formatter);
             if (now.isAfter(weekly)) {
-                LocalDateTime end = weekly.plusWeeks(1);
+                LocalDateTime end = timeLogService.todayAt(4, 0).plusWeeks(1);
+                weeklyLog.setStatus(3);
                 timeLogService.updateTimeLog(weeklyLog, weeklyLog.getId());
-                timeLogService.setTimeLog(weekly.toString(), end.toString(), "", 1, 2);
+                timeLogService.setTimeLog(timeLogService.todayAt(4, 0).toString(), end.toString(), "", 1, 2);
                 List<UserQuestHelper> oldQuests = getActiveUserQuestsByUserIdAndType(user_id, 2);
                 for (int i = 0; i < oldQuests.size(); i++) {
                     UserQuest uq = getUserQuest(oldQuests.get(i).getId());
@@ -171,6 +174,7 @@ public class UserQuestService {
             LocalDateTime monthly = LocalDateTime.parse(monthlyLog.getDate_end(), formatter);
             if (now.isAfter(monthly)) {
                 LocalDateTime end = monthly.plusMonths(1);
+                monthlyLog.setStatus(3);
                 timeLogService.updateTimeLog(monthlyLog, monthlyLog.getId());
                 timeLogService.setTimeLog(monthly.toString(), end.toString(), "", 1, 3);
                 List<UserQuestHelper> oldQuests = getActiveUserQuestsByUserIdAndType(user_id, 3);

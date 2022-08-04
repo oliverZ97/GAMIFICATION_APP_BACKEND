@@ -13,7 +13,7 @@ public interface UserQuestRepository extends JpaRepository<UserQuest, Long> {
     @Query(value = "SELECT * FROM user_quest u WHERE u.user_id = ?1 AND u.status < 3", nativeQuery = true)
     List<UserQuest> getActiveUserQuestsByUserId(long user_id);
 
-    @Query(value = "SELECT * FROM user_quest u WHERE u.user_id = ?1 AND u.type = ?2", nativeQuery = true)
+    @Query(value = "SELECT * FROM user_quest u WHERE u.user_id = ?1 AND u.type = ?2 AND u.status < 3", nativeQuery = true)
     List<UserQuest> getActiveUserQuestsByUserIdAndType(long user_id, int type);
 
     @Query(value = "SELECT * FROM user_quest u WHERE u.user_id = ?1 AND u.status = 5", nativeQuery = true)

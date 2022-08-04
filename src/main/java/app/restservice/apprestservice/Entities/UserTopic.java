@@ -27,9 +27,5 @@ public class UserTopic {
 
     @Getter
     @Setter
-    private int number_of_gains;
-
-    @Getter
-    @Setter
     private int favourite;
 }

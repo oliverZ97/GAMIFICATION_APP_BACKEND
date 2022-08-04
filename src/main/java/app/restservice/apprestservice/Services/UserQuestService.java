@@ -121,7 +121,6 @@ public class UserQuestService {
             LocalDateTime daily = LocalDateTime.parse(dailyLog.getDate_end(), formatter);
             if (now.isAfter(daily)) {
                 LocalDateTime end = daily.plusHours(24);
-                dailyLog.setStatus(3);
                 timeLogService.updateTimeLog(dailyLog, dailyLog.getId());
                 timeLogService.setTimeLog(daily.toString(), end.toString(), "", 1, 1);
                 List<UserQuestHelper> oldQuests = getActiveUserQuestsByUserIdAndType(user_id, 1);
@@ -147,7 +146,6 @@ public class UserQuestService {
             LocalDateTime weekly = LocalDateTime.parse(weeklyLog.getDate_end(), formatter);
             if (now.isAfter(weekly)) {
                 LocalDateTime end = weekly.plusWeeks(1);
-                weeklyLog.setStatus(3);
                 timeLogService.updateTimeLog(weeklyLog, weeklyLog.getId());
                 timeLogService.setTimeLog(weekly.toString(), end.toString(), "", 1, 2);
                 List<UserQuestHelper> oldQuests = getActiveUserQuestsByUserIdAndType(user_id, 2);
@@ -173,13 +171,12 @@ public class UserQuestService {
             LocalDateTime monthly = LocalDateTime.parse(monthlyLog.getDate_end(), formatter);
             if (now.isAfter(monthly)) {
                 LocalDateTime end = monthly.plusMonths(1);
-                monthlyLog.setStatus(3);
                 timeLogService.updateTimeLog(monthlyLog, monthlyLog.getId());
                 timeLogService.setTimeLog(monthly.toString(), end.toString(), "", 1, 3);
                 List<UserQuestHelper> oldQuests = getActiveUserQuestsByUserIdAndType(user_id, 3);
                 for (int i = 0; i < oldQuests.size(); i++) {
                     UserQuest uq = getUserQuest(oldQuests.get(i).getId());
-                    if (uq.getStatus() == 1) {
+                    if (uq.getStatus() < 3) {
                         uq.setStatus(4);
                     } else {
                         uq.setStatus(5);
@@ -248,6 +245,7 @@ public class UserQuestService {
             entry.setStatus(1);
             entry.setUser_ID(userQuestRequest.getUser_ID());
             userLogService.setUserLog(entry);
+            userQuest.setStatus(3);
         }
         if (questService.getQuest(userQuest.getQuest_ID()).getType() == 1) {
             userAchievementService.handleUserAchievementByKey(userQuest.getUser_ID(), "daily");

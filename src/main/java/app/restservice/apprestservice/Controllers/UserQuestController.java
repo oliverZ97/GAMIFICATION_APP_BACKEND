@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import app.restservice.apprestservice.Entities.Content;
 import app.restservice.apprestservice.Entities.ContentQuestHelper;
 import app.restservice.apprestservice.Entities.UserQuest;
 import app.restservice.apprestservice.Entities.UserQuestHelper;

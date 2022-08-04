@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.UserCategory;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.UserCategoryRepository;
@@ -15,8 +14,6 @@ import app.restservice.apprestservice.Repositories.UserCategoryRepository;
 public class UserCategoryService {
     @Autowired
     private UserCategoryRepository userCategoryRepository;
-
-    private CopyPropertiesOfEntity copyPropertiesOfEntity;
 
     public UserCategory getUserCategory(Long id) {
         if (userCategoryRepository.findById(id).isPresent()) {
@@ -43,12 +40,6 @@ public class UserCategoryService {
     }
 
     public UserCategory updateUserCategory(UserCategory userCategoryRequest, long id) {
-        // UserCategory userCategory = getUserCategory(id);
-        // System.out.println(userCategoryRequest);
-        // System.out.println(userCategory);
-        // copyPropertiesOfEntity.copyNonNullProperties(userCategoryRequest,
-        // userCategory);
-        // System.out.println(userCategory);
         return userCategoryRepository.save(userCategoryRequest);
     }
 

@@ -21,7 +21,7 @@ public class UserLog {
     @Setter
     private long user_ID;
 
-    // 1 = level, 2 = quest, 3 = achievement
+    // 1 = level, 2 = quest, 3 = achievement, 4 = streak
     @Getter
     @Setter
     private int type;

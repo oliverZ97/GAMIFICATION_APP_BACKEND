@@ -60,7 +60,6 @@ public class UserContentController {
     public ResponseEntity<Object> updateUserContent(@PathVariable Long id,
             @RequestBody UserContent userContentRequest) {
         UserContent resultObj = userContentService.updateUserContent(userContentRequest, id);
-        System.out.println(resultObj);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("message", "OK");
         map.put("status", HttpStatus.OK);

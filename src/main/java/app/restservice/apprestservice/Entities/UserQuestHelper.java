@@ -2,8 +2,6 @@ package app.restservice.apprestservice.Entities;
 
 import lombok.*;
 
-import javax.persistence.*;
-
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor
 @ToString

@@ -2,7 +2,6 @@ package app.restservice.apprestservice.Entities;
 
 import java.util.List;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import lombok.*;
 

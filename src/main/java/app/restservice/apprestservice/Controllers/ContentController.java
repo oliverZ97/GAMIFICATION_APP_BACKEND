@@ -87,7 +87,7 @@ public class ContentController {
             content.setNumber_of_words(contentRequest.getNumber_of_words());
             content.setSource(contentRequest.getSource());
             content.setTitle(contentRequest.getTitle());
-            content.setTopics(topics);
+            content.setTopic_IDs(topicIdsString);
             contentService.setContent(content);
             return ResponseEntity.status(HttpStatus.OK).body("Content wurde erstellt");
         }

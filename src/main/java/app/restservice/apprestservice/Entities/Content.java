@@ -2,8 +2,6 @@ package app.restservice.apprestservice.Entities;
 
 import lombok.*;
 
-import java.util.List;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
@@ -34,12 +32,6 @@ public class Content {
     @Setter
     @NotEmpty
     private String topic_IDs;
-
-    @Getter
-    @Setter
-    @ManyToMany
-    @JoinColumn(name = "topic_ids")
-    private List<Topic> topics;
 
     @Getter
     @Setter

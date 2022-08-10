@@ -29,12 +29,6 @@ public class ContentQuestHelper {
 
     @Getter
     @Setter
-    @ManyToMany
-    @JoinColumn(name = "topic_ids")
-    private List<Topic> topics;
-
-    @Getter
-    @Setter
     private String author;
 
     @Getter

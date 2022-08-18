@@ -5,11 +5,8 @@ import org.springframework.stereotype.Service;
 import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.UserLog;
 import app.restservice.apprestservice.Entities.UserLogSorted;
-import app.restservice.apprestservice.Entities.UserQuest;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.UserLogRepository;
-import app.restservice.apprestservice.Repositories.UserQuestRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 

@@ -122,6 +122,10 @@ public class UserContentService {
     public UserContent updateUserContentFavourite(long id, int favourite) {
         UserContent userContent = getUserContent(id);
         userContent.setFavourite(favourite);
+        userContent.setGetReward(userContent.isGetReward());
+        userContent.setUser_ID(userContent.getUser_ID());
+        userContent.setContent_ID(userContent.getContent_ID());
+        userContent.setId(userContent.getId());
         UserContent result = userContentRepository.save(userContent);
         return result;
     }

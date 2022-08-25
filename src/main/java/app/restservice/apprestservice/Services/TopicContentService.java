@@ -10,7 +10,6 @@ import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.TopicContent;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.TopicContentRepository;
-import app.restservice.apprestservice.Repositories.UserContentRepository;
 
 @Service
 public class TopicContentService {

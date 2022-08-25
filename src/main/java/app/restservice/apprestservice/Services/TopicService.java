@@ -6,7 +6,6 @@ import app.restservice.apprestservice.CopyPropertiesOfEntity;
 import app.restservice.apprestservice.Entities.Topic;
 import app.restservice.apprestservice.Exceptions.ResourceNotFoundException;
 import app.restservice.apprestservice.Repositories.CategoryRepository;
-import app.restservice.apprestservice.Repositories.ContentRepository;
 import app.restservice.apprestservice.Repositories.TopicRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
